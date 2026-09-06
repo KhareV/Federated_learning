@@ -1,0 +1,94 @@
+{
+  "experiment": "E03_random_forest",
+  "training_time_s": 0.44,
+  "n_estimators": 200,
+  "n_features": 42,
+  "dataset": "SYNTHETIC",
+  "seed": 42,
+  "top_features": [
+    [
+      "td_p75",
+      0.0911
+    ],
+    [
+      "morph_envelope_std",
+      0.09
+    ],
+    [
+      "td_std",
+      0.08
+    ],
+    [
+      "hrv_mean_rr_ms",
+      0.075
+    ],
+    [
+      "qual_sqi_overall",
+      0.07
+    ],
+    [
+      "td_kurtosis",
+      0.07
+    ],
+    [
+      "td_var",
+      0.065
+    ],
+    [
+      "qual_clipping_fraction",
+      0.055
+    ],
+    [
+      "spec_spectral_edge_95",
+      0.055
+    ],
+    [
+      "td_skewness",
+      0.05
+    ]
+  ],
+  "results": {
+    "val": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "specificity": 1.0,
+      "false_positive_rate": 0.0,
+      "auroc": 1.0,
+      "auprc": 1.0,
+      "tp": 25,
+      "tn": 50,
+      "fp": 0,
+      "fn": 0,
+      "n_total": 75,
+      "n_normal": 50,
+      "n_abnormal": 25,
+      "split": "val",
+      "model_name": "random_forest",
+      "dataset": "SYNTHETIC",
+      "notes": ""
+    },
+    "test": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "specificity": 1.0,
+      "false_positive_rate": 0.0,
+      "auroc": 1.0,
+      "auprc": 1.0,
+      "tp": 30,
+      "tn": 45,
+      "fp": 0,
+      "fn": 0,
+      "n_total": 75,
+      "n_normal": 45,
+      "n_abnormal": 30,
+      "split": "test",
+      "model_name": "random_forest",
+      "dataset": "SYNTHETIC",
+      "notes": ""
+    }
+  }
+}

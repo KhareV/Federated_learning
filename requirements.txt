@@ -1,0 +1,46 @@
+# Core web framework
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+aiosqlite
+pydantic-settings
+python-jose[cryptography]
+passlib[bcrypt]
+websockets
+python-multipart
+httpx
+aiofiles
+
+# Data science / ML
+numpy
+scipy
+pandas
+scikit-learn
+xgboost
+torch
+torchvision
+
+# ECG / Physiological data
+wfdb
+
+# FL (installed but used only in P3 phase)
+flwr
+
+# Configuration
+pyyaml
+
+# Serialization / model persistence
+joblib
+
+# Visualization / reports
+matplotlib
+seaborn
+reportlab
+
+# Logging / utilities
+structlog
+python-dotenv
+
+# Testing
+pytest
+pytest-asyncio

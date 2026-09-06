@@ -1,0 +1,27 @@
+# Python & Testing
+__pycache__/
+*.pyc
+.pytest_cache/
+.benchmarks/
+venv/
+.venv/
+
+# Local Database
+health_monitor.db
+
+# Raw Datasets
+data/raw/
+data/processed/
+!data/.gitkeep
+
+# Heavy Model Checkpoints
+experiments/**/*.pt
+experiments/**/*.pkl
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Environment Variables & IDE
+.env
+.vscode/

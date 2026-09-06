@@ -1,0 +1,51 @@
+{
+  "experiment": "E02_logistic_regression",
+  "training_time_s": 0.0,
+  "n_features": 42,
+  "dataset": "SYNTHETIC",
+  "seed": 42,
+  "results": {
+    "val": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "specificity": 1.0,
+      "false_positive_rate": 0.0,
+      "auroc": 1.0,
+      "auprc": 1.0,
+      "tp": 25,
+      "tn": 50,
+      "fp": 0,
+      "fn": 0,
+      "n_total": 75,
+      "n_normal": 50,
+      "n_abnormal": 25,
+      "split": "val",
+      "model_name": "logistic_regression",
+      "dataset": "SYNTHETIC",
+      "notes": ""
+    },
+    "test": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "specificity": 1.0,
+      "false_positive_rate": 0.0,
+      "auroc": 1.0,
+      "auprc": 1.0,
+      "tp": 30,
+      "tn": 45,
+      "fp": 0,
+      "fn": 0,
+      "n_total": 75,
+      "n_normal": 45,
+      "n_abnormal": 30,
+      "split": "test",
+      "model_name": "logistic_regression",
+      "dataset": "SYNTHETIC",
+      "notes": ""
+    }
+  }
+}

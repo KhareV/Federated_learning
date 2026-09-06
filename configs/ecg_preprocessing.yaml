@@ -1,0 +1,156 @@
+# ============================================================
+# P1 ECG Preprocessing Configuration
+# Version: 1.0.0
+# ============================================================
+# Every parameter here is versioned. Changing any value must
+# increment preprocessing_version to ensure traceability.
+
+preprocessing_version: "1.0.0"
+
+# ─── Dataset Paths ──────────────────────────────────────────
+data:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  ptbxl_dir: "data/raw/ptbxl"
+  mitbih_dir: "data/raw/mitbih"
+  nstdb_dir: "data/raw/nstdb"
+  wearable_dir: "data/raw/wearable"
+  manifest_dir: "data/manifests"
+  splits_dir: "data/splits"
+
+# ─── PTB-XL Settings ────────────────────────────────────────
+ptbxl:
+  sampling_rate: 500          # Hz; PTB-XL provides 100 and 500 Hz
+  resample_to: 250            # Hz; canonical internal rate
+  lead: "II"                  # Primary lead for single-channel experiments
+  all_leads:
+    - "I" 
+    - "II" 
+    - "III"
+    - "aVR" 
+    - "aVL" 
+    - "aVF"
+    - "V1" 
+    - "V2" 
+    - "V3" 
+    - "V4" 
+    - "V5" 
+    - "V6"
+
+# ─── MIT-BIH Arrhythmia Settings ────────────────────────────
+mitbih:
+  sampling_rate: 360          # Hz; native MIT-BIH rate
+  resample_to: 250            # Hz; resampled to canonical rate
+  lead: "MLII"                # Primary lead (Modified Lead II)
+
+# ─── Windowing ──────────────────────────────────────────────
+windowing:
+  window_seconds: 10          # seconds per window
+  stride_seconds: 5           # stride (50% overlap)
+  # Derived: window_samples = window_seconds * canonical_fs
+  # At 250 Hz: 10s = 2500 samples
+
+# ─── Canonical ECG Preprocessing Pipeline ───────────────────
+preprocessing:
+  target_fs: 250              # Hz — canonical sampling rate
+
+  # Step 1 — Baseline wander removal
+  baseline_filter:
+    type: "highpass_butter"
+    order: 4
+    cutoff_hz: 0.5
+    phase: "zero"             # filtfilt (zero-phase)
+
+  # Step 2 — Anti-aliasing / band limiting
+  bandpass_filter:
+    type: "bandpass_butter"
+    order: 4
+    low_hz: 0.5
+    high_hz: 40.0
+    phase: "zero"
+
+  # Step 3 — Powerline interference removal
+  notch_filter:
+    enabled: true
+    freq_hz: 50               # 50 Hz (Europe/India). Set 60 for US.
+    quality_factor: 30
+    phase: "zero"
+
+  # Step 4 — Normalization
+  normalization:
+    method: "zscore"          # Options: zscore | minmax | robust
+    # IMPORTANT: statistics are computed on training split ONLY
+    # and applied to validation/test without refitting
+
+  # Step 5 — Clipping
+  clipping:
+    enabled: true
+    std_multiplier: 5.0       # Clip values beyond ±5σ from mean
+    # Applied AFTER normalization
+
+# ─── SQI Thresholds ─────────────────────────────────────────
+sqi:
+  excellent_threshold: 80.0   # SQI ≥ 80 → EXCELLENT
+  good_threshold: 60.0        # SQI ≥ 60 → GOOD
+  fair_threshold: 40.0        # SQI ≥ 40 → FAIR
+  # SQI < 40 → POOR
+  reject_below: 20.0          # Reject windows with SQI < 20 (configurable)
+  flatline_std_threshold: 0.002  # Signal std below this → flatline
+  clipping_fraction_max: 0.05    # >5% samples at rail → clipped
+  min_amplitude_mv: 0.05         # Minimum peak-to-peak amplitude
+
+# ─── Label Schema ────────────────────────────────────────────
+labels:
+  # Canonical binary mapping for initial classification task
+  # 0 = NORMAL, 1 = ABNORMAL
+  canonical:
+    NORMAL: 0
+    ABNORMAL: 1
+  # PTB-XL superclass → canonical
+  ptbxl_superclass_map:
+    NORM: NORMAL
+    MI: ABNORMAL
+    STTC: ABNORMAL
+    CD: ABNORMAL
+    HYP: ABNORMAL
+  # Labels to EXCLUDE from experiments (ambiguous or insufficient samples)
+  exclude_labels: []
+
+# ─── Model Training ─────────────────────────────────────────
+training:
+  random_seed: 42
+  test_fraction: 0.15         # Patient-level split
+  val_fraction: 0.15          # Patient-level split
+  # train = 1 - test - val
+
+  # CNN training
+  cnn:
+    batch_size: 64
+    learning_rate: 0.001
+    max_epochs: 50
+    early_stopping_patience: 7
+    optimizer: "adam"
+    scheduler: "cosine"
+    device: "auto"            # auto: CUDA if available, else CPU
+
+  # Classical models
+  classical:
+    logistic_regression:
+      max_iter: 1000
+      C: 1.0
+      class_weight: "balanced"
+    random_forest:
+      n_estimators: 200
+      max_depth: 12
+      class_weight: "balanced"
+      n_jobs: -1
+
+# ─── Noise Robustness Experiment ────────────────────────────
+noise_robustness:
+  snr_levels_db:
+    - 24
+    - 18
+    - 12
+    - 6
+    - 0
+    - -6

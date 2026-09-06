@@ -1,0 +1,25 @@
+{
+  "experiment": "E04_ecg_cnn",
+  "best_val_f1": 1.0,
+  "test": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "specificity": 1.0,
+    "false_positive_rate": 0.0,
+    "auroc": 1.0,
+    "auprc": 1.0,
+    "tp": 30,
+    "tn": 45,
+    "fp": 0,
+    "fn": 0,
+    "n_total": 75,
+    "n_normal": 45,
+    "n_abnormal": 30,
+    "split": "test",
+    "model_name": "ecg_cnn_MODEL_V1",
+    "dataset": "SYNTHETIC",
+    "notes": ""
+  }
+}
