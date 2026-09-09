@@ -1,6 +1,8 @@
 """Hosted centralized ECG research-candidate service loaded once per process."""
 
 import time
+import hashlib
+import json
 from pathlib import Path
 
 import numpy as np
@@ -16,20 +18,37 @@ class ModelUnavailable(RuntimeError):
 
 
 class ModelService:
-    def __init__(self, model_path=None, preprocessing_path=None, calibration_path=None):
+    def __init__(self, model_path=None, preprocessing_path=None, calibration_path=None, lock_path=None):
         self.model_path = Path(model_path or "experiments/centralized_ecg_v2/ecg_cnn_MODEL_V2/best_checkpoint.pt")
         self.preprocessing_path = Path(preprocessing_path or "experiments/centralized_ecg_v2/preprocessing.json")
         self.calibration_path = Path(calibration_path or "experiments/centralized_ecg_v2_evaluation/temperature_scaling.json")
+        self.lock_path = Path(lock_path or "artifacts/MODEL_V2_RESEARCH_CANDIDATE/LOCK_MANIFEST.json")
         self.model = None
         self.preprocessor = None
         self.calibrator = None
         self.threshold = 0.5
         self.model_version = "MODEL_V2"
         self.release_status = "RESEARCH_CANDIDATE_BLOCKED_EXTERNAL_GATE"
+        self.artifact_integrity = "UNVERIFIED"
+
+    def _verify_lock(self):
+        if not self.lock_path.exists():
+            raise ModelUnavailable("Central ECG candidate lock manifest is unavailable")
+        lock = json.loads(self.lock_path.read_text())
+        mismatches = []
+        for name, item in lock["artifacts"].items():
+            path = Path(item["path"])
+            actual = hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+            if actual != item["sha256"]:
+                mismatches.append(name)
+        if mismatches:
+            raise ModelUnavailable(f"Central ECG candidate integrity verification failed: {', '.join(mismatches)}")
+        self.artifact_integrity = "VERIFIED"
 
     def load(self):
         if not self.model_path.exists() or not self.preprocessing_path.exists():
             raise ModelUnavailable("Central ECG research-candidate artifacts are unavailable")
+        self._verify_lock()
         self.model, checkpoint = ECGCNN1D.load_checkpoint(str(self.model_path), device="cpu")
         self.preprocessor = ECGPreprocessor.load_normalization_stats(self.preprocessing_path)
         if self.calibration_path.exists():

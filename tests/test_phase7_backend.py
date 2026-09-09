@@ -32,3 +32,11 @@ async def test_inference_rejects_unknown_session():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post("/inference", json={"session_id": "missing", "samples": [0.0]})
     assert response.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_model_status_exposes_verified_candidate_integrity():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/system/model")
+    assert response.status_code == 200
+    assert response.json()["artifact_integrity"] == "VERIFIED"
