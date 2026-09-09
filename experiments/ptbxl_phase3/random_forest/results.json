@@ -1,0 +1,52 @@
+{
+  "experiment": "random_forest",
+  "dataset": "ptbxl",
+  "seed": 42,
+  "git_commit": "51fdef93ba817077e8811e90b921550c581a5514",
+  "results": {
+    "val": {
+      "accuracy": 0.7853,
+      "precision": 0.8379,
+      "recall": 0.777,
+      "f1": 0.8064,
+      "specificity": 0.7964,
+      "false_positive_rate": 0.2036,
+      "auroc": 0.8607,
+      "auprc": 0.9033,
+      "tp": 1422,
+      "tn": 1076,
+      "fp": 275,
+      "fn": 408,
+      "n_total": 3181,
+      "n_normal": 1351,
+      "n_abnormal": 1830,
+      "split": "val",
+      "model_name": "random_forest",
+      "dataset": "ptbxl",
+      "notes": "",
+      "inference_latency_ms_per_window": 0.0168
+    },
+    "test": {
+      "accuracy": 0.7816,
+      "precision": 0.8198,
+      "recall": 0.7839,
+      "f1": 0.8015,
+      "specificity": 0.7786,
+      "false_positive_rate": 0.2214,
+      "auroc": 0.8666,
+      "auprc": 0.9014,
+      "tp": 1415,
+      "tn": 1094,
+      "fp": 311,
+      "fn": 390,
+      "n_total": 3210,
+      "n_normal": 1405,
+      "n_abnormal": 1805,
+      "split": "test",
+      "model_name": "random_forest",
+      "dataset": "ptbxl",
+      "notes": "",
+      "inference_latency_ms_per_window": 0.0163
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "experiment": "ecg_cnn_MODEL_V1",
+  "dataset": "ptbxl",
+  "seed": 42,
+  "git_commit": "51fdef93ba817077e8811e90b921550c581a5514",
+  "preprocessing_artifact": "/tmp/nhm-ptbxl-phase3-cnn-full.eBtain/preprocessing.json"
+}

@@ -1,0 +1,52 @@
+{
+  "experiment": "majority",
+  "dataset": "ptbxl",
+  "seed": 42,
+  "git_commit": "51fdef93ba817077e8811e90b921550c581a5514",
+  "results": {
+    "val": {
+      "accuracy": 0.5753,
+      "precision": 0.5753,
+      "recall": 1.0,
+      "f1": 0.7304,
+      "specificity": 0.0,
+      "false_positive_rate": 1.0,
+      "auroc": 0.5,
+      "auprc": 0.5753,
+      "tp": 1830,
+      "tn": 0,
+      "fp": 1351,
+      "fn": 0,
+      "n_total": 3181,
+      "n_normal": 1351,
+      "n_abnormal": 1830,
+      "split": "val",
+      "model_name": "majority",
+      "dataset": "ptbxl",
+      "notes": "",
+      "inference_latency_ms_per_window": 0.0
+    },
+    "test": {
+      "accuracy": 0.5623,
+      "precision": 0.5623,
+      "recall": 1.0,
+      "f1": 0.7198,
+      "specificity": 0.0,
+      "false_positive_rate": 1.0,
+      "auroc": 0.5,
+      "auprc": 0.5623,
+      "tp": 1805,
+      "tn": 0,
+      "fp": 1405,
+      "fn": 0,
+      "n_total": 3210,
+      "n_normal": 1405,
+      "n_abnormal": 1805,
+      "split": "test",
+      "model_name": "majority",
+      "dataset": "ptbxl",
+      "notes": "",
+      "inference_latency_ms_per_window": 0.0
+    }
+  }
+}

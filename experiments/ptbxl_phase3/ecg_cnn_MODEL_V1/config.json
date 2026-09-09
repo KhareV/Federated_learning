@@ -1,0 +1,45 @@
+{
+  "experiment": "E04_ecg_cnn",
+  "model_config": {
+    "input_channels": 1,
+    "input_length": 2500,
+    "n_classes": 2,
+    "conv_channels": [
+      32,
+      64,
+      128,
+      256
+    ],
+    "kernel_sizes": [
+      9,
+      7,
+      5,
+      3
+    ],
+    "pool_sizes": [
+      4,
+      4,
+      4,
+      4
+    ],
+    "fc_hidden": 128,
+    "dropout": 0.4,
+    "model_version": "MODEL_V1",
+    "preprocessing_version": "1.0.0",
+    "feature_version": "1.0.0"
+  },
+  "training": {
+    "seed": 42,
+    "batch_size": 64,
+    "max_epochs": 5,
+    "lr": 0.001,
+    "patience": 7,
+    "device": "cpu",
+    "training_time_s": 333.6,
+    "epochs_run": 5
+  },
+  "dataset": "ptbxl",
+  "n_train": 15039,
+  "n_val": 3181,
+  "n_test": 3210
+}

@@ -1,0 +1,52 @@
+{
+  "experiment": "logistic_regression",
+  "dataset": "ptbxl",
+  "seed": 42,
+  "git_commit": "51fdef93ba817077e8811e90b921550c581a5514",
+  "results": {
+    "val": {
+      "accuracy": 0.7686,
+      "precision": 0.8291,
+      "recall": 0.753,
+      "f1": 0.7892,
+      "specificity": 0.7898,
+      "false_positive_rate": 0.2102,
+      "auroc": 0.8507,
+      "auprc": 0.8924,
+      "tp": 1378,
+      "tn": 1067,
+      "fp": 284,
+      "fn": 452,
+      "n_total": 3181,
+      "n_normal": 1351,
+      "n_abnormal": 1830,
+      "split": "val",
+      "model_name": "logistic_regression",
+      "dataset": "ptbxl",
+      "notes": "",
+      "inference_latency_ms_per_window": 0.0009
+    },
+    "test": {
+      "accuracy": 0.7773,
+      "precision": 0.8279,
+      "recall": 0.7623,
+      "f1": 0.7938,
+      "specificity": 0.7964,
+      "false_positive_rate": 0.2036,
+      "auroc": 0.8566,
+      "auprc": 0.8936,
+      "tp": 1376,
+      "tn": 1119,
+      "fp": 286,
+      "fn": 429,
+      "n_total": 3210,
+      "n_normal": 1405,
+      "n_abnormal": 1805,
+      "split": "test",
+      "model_name": "logistic_regression",
+      "dataset": "ptbxl",
+      "notes": "",
+      "inference_latency_ms_per_window": 0.0003
+    }
+  }
+}

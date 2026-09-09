@@ -43,7 +43,7 @@ federated learning, secure aggregation, DP, and edge optimization.
 | 0 | Contracts frozen; authentication removed; synthetic artifacts labelled | **Complete** | Contract docs present; auth route/dependency scan passed; 82 tests passed |
 | 1 | Supplied datasets registered, structurally validated, and manifestable | **Complete** | `scripts/validate_datasets.py` passed for PTB-XL, MIT-BIH, Noise Stress, BIDMC; inventory written |
 | 2 | Train-only normalization, canonical ECG path, and SQI gate verified | **Complete** | `tests/test_phase2_ecg_contract.py`; full suite: 86 passed |
-| 3 | Real PTB-XL baselines and reproducible `MODEL_V1` | Pending | Not started |
+| 3 | Real PTB-XL baselines and reproducible `MODEL_V1` | **Complete** | `docs/PHASE3_REAL_PTBXL_BASELINES.md`; full real-data run and checkpoint artifacts |
 | 4 | Calibration, locked threshold, external and noise reports | Pending | Not started |
 | 5 | PPG/SpO₂ pipeline, BIDMC synchronization, fusion/ablations | Pending | Not started |
 | 6 | Deterministic streaming state/event evaluation | Pending | Not started |
