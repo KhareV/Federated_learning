@@ -17,7 +17,7 @@ async def test_session_lifecycle_and_persisted_inference():
         response = await client.post("/inference", json={"session_id": session_id, "samples": samples, "sampling_rate": 250, "source": "REPLAY"})
         assert response.status_code == 201
         body = response.json()
-        assert body["model_version"] == "MODEL_V1"
+        assert body["model_version"] == "MODEL_V2"
         assert body["disclaimer"] == "Research prototype; not a medical diagnosis."
         history = await client.get(f"/monitoring/sessions/{session_id}/predictions")
         assert history.status_code == 200

@@ -1,4 +1,4 @@
-"""Hosted centralized MODEL_V1 service loaded once per process."""
+"""Hosted centralized ECG research-candidate service loaded once per process."""
 
 import time
 from pathlib import Path
@@ -17,18 +17,19 @@ class ModelUnavailable(RuntimeError):
 
 class ModelService:
     def __init__(self, model_path=None, preprocessing_path=None, calibration_path=None):
-        self.model_path = Path(model_path or "experiments/ptbxl_phase3/ecg_cnn_MODEL_V1/best_checkpoint.pt")
-        self.preprocessing_path = Path(preprocessing_path or "experiments/ptbxl_phase3/preprocessing.json")
-        self.calibration_path = Path(calibration_path or "experiments/ptbxl_phase4/temperature_scaling.json")
+        self.model_path = Path(model_path or "experiments/centralized_ecg_v2/ecg_cnn_MODEL_V2/best_checkpoint.pt")
+        self.preprocessing_path = Path(preprocessing_path or "experiments/centralized_ecg_v2/preprocessing.json")
+        self.calibration_path = Path(calibration_path or "experiments/centralized_ecg_v2_evaluation/temperature_scaling.json")
         self.model = None
         self.preprocessor = None
         self.calibrator = None
-        self.threshold = 0.404609957416069
-        self.model_version = "MODEL_V1"
+        self.threshold = 0.5
+        self.model_version = "MODEL_V2"
+        self.release_status = "RESEARCH_CANDIDATE_BLOCKED_EXTERNAL_GATE"
 
     def load(self):
         if not self.model_path.exists() or not self.preprocessing_path.exists():
-            raise ModelUnavailable("Central MODEL_V1 artifacts are unavailable")
+            raise ModelUnavailable("Central ECG research-candidate artifacts are unavailable")
         self.model, checkpoint = ECGCNN1D.load_checkpoint(str(self.model_path), device="cpu")
         self.preprocessor = ECGPreprocessor.load_normalization_stats(self.preprocessing_path)
         if self.calibration_path.exists():

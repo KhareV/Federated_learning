@@ -33,6 +33,6 @@ async def test_replay_script_is_deterministic():
 
 	first = await run(10, 91)
 	second = await run(10, 91)
-	assert first["model_version"] == "MODEL_V1"
+	assert first["model_version"] == "MODEL_V2"
 	assert first["windows"] == second["windows"] == 1
 	assert first["persisted_predictions"] == second["persisted_predictions"] == 1

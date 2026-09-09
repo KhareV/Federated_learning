@@ -4,7 +4,7 @@ from backend.db.database import create_all_tables
 import asyncio
 
 app = FastAPI(
-    title="QAPFL Health Monitor API",
+    title="NHM Centralized ECG Monitor API",
     description="Medical disclaimer: This software is for research purposes only."
 )
 
