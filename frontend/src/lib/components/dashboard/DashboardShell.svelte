@@ -7,7 +7,7 @@
 	const NAV = [
 		{ label: 'OBSERVE', detail: 'Signals', path: '/overview', icon: Activity },
 		{ label: 'INSIGHTS', detail: 'Models', path: '/ai/insights', icon: BrainCircuit },
-		{ label: 'FEDERATE', detail: 'Learning', path: '/fl/overview', icon: Network },
+		{ label: 'DEFERRED', detail: 'Federated / hardware', path: '/fl/overview', icon: Network },
 		{ label: 'LAB', detail: 'Evidence', path: '/research/analytics', icon: FlaskConical }
 	];
 	const GROUPS: Record<string, string> = {

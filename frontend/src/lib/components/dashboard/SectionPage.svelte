@@ -10,7 +10,7 @@
 	let loading = $state(true);
 	let error = $state('');
 	let requestStatus = $state<'idle' | 'loading' | 'received' | 'unavailable'>('idle');
-	const verifiedEndpoints = new Set(['/anomaly/events', '/anomaly/stats', '/anomaly/timeline', '/alerts/notifications', '/baseline/demo', '/fl/status', '/fl/clients', '/fl/rounds', '/fl/aggregation/demo', '/fl/global-model', '/fl/personal-models', '/experiments', '/devices', '/reports', '/system/health', '/system/stats', '/system/settings', '/monitoring/sessions', '/monitoring/live/client_01', '/signals/ppg/live/client_01', '/signals/spo2/demo']);
+	const verifiedEndpoints = new Set(['/system/health', '/monitoring/sessions']);
 
 	onMount(async () => {
 		if (!endpoint) { loading = false; return; }
@@ -21,9 +21,9 @@
 </script>
 
 <WorkbenchPage {eyebrow} {title} {description}>
-	<div class="route-meta"><span>DATA CHANNEL / {requestStatus === 'received' ? 'RECEIVED' : requestStatus === 'unavailable' ? 'UNAVAILABLE' : endpoint ? 'REQUESTING' : 'LOCAL VIEW'}</span><span>IDENTITY / CLERK BOUNDARY</span><span>STATUS / RESEARCH</span></div>
-	{#if signal}<div class="signal-layout"><TelemetryPlot label={`${signal.toUpperCase()} / analysis stream`} mode={signal} value="--" unit={signal === 'spo2' ? '%' : 'BPM'} detail="AWAITING LIVE SESSION" /><div class="metrics"><MetricTile label="Signal quality" value="84" unit="%" detail="GOOD" /><MetricTile label="Confidence" value="0.91" detail="MODEL OUTPUT" tone="cyan" /></div></div>
-	{:else}<div class="metrics"><MetricTile label="Pipeline status" value={loading ? 'SYNC' : error ? 'WARN' : 'READY'} detail="BACKEND CONTRACT" tone={error ? 'amber' : 'teal'} /><MetricTile label="Records returned" value={data && Array.isArray(data) ? data.length : '--'} detail="CURRENT RESPONSE" tone="cyan" /><MetricTile label="Privacy layer" value="ON" detail="RAW DATA LOCAL" /></div>{/if}
+	<div class="route-meta"><span>DATA CHANNEL / {requestStatus === 'received' ? 'LIVE API' : requestStatus === 'unavailable' ? 'UNAVAILABLE' : endpoint ? 'REQUESTING' : 'LOCAL VIEW'}</span><span>AUTH / DISABLED BY SCOPE</span><span>STATUS / RESEARCH</span></div>
+	{#if signal}<div class="signal-layout"><TelemetryPlot label={`${signal.toUpperCase()} / analysis stream`} mode={signal} value="--" unit={signal === 'spo2' ? '%' : 'BPM'} detail="AWAITING LIVE OR REPLAY DATA" /><div class="metrics"><MetricTile label="Signal quality" value="--" unit="%" detail="AWAITING API DATA" /><MetricTile label="Confidence" value="--" detail="MODEL OUTPUT UNAVAILABLE" tone="cyan" /></div></div>
+	{:else}<div class="metrics"><MetricTile label="Pipeline status" value={loading ? 'SYNC' : error ? 'WARN' : 'READY'} detail="BACKEND CONTRACT" tone={error ? 'amber' : 'teal'} /><MetricTile label="Records returned" value={data && Array.isArray(data) ? data.length : '--'} detail="LIVE API RESPONSE" tone="cyan" /><MetricTile label="Model status" value="--" detail="NO SYNTHETIC METRICS" /></div>{/if}
 	{#if error}<div class="error">{error}</div>{:else if data !== null}<details><summary>Inspect service response</summary><pre>{JSON.stringify(data, null, 2)}</pre></details>{:else if loading}<div class="loading">REQUESTING SERVICE DATA...</div>{/if}
 </WorkbenchPage>
 
