@@ -208,3 +208,36 @@ def compute_per_class_metrics(
                 "support": int(report[cls]["support"]),
             }
     return result
+
+
+def grouped_bootstrap_confidence_intervals(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    y_prob: np.ndarray,
+    groups: np.ndarray,
+    n_resamples: int = 500,
+    seed: int = 42,
+) -> Dict[str, Dict[str, float]]:
+    """95% percentile intervals resampling whole participants/records.
+
+    Windows within a recording are correlated. Resampling rows would produce
+    misleadingly narrow intervals, so one bootstrap draw samples groups and
+    retains all of their windows.
+    """
+    y_true, y_pred, y_prob, groups = map(np.asarray, (y_true, y_pred, y_prob, groups))
+    unique = np.unique(groups)
+    if len(unique) < 2:
+        return {}
+    rng = np.random.default_rng(seed)
+    values: Dict[str, list[float]] = {name: [] for name in ("auroc", "recall", "specificity", "f1")}
+    for _ in range(n_resamples):
+        chosen = rng.choice(unique, size=len(unique), replace=True)
+        indices = np.concatenate([np.flatnonzero(groups == group) for group in chosen])
+        sample = compute_metrics(y_true[indices], y_pred[indices], y_prob[indices])
+        for name in values:
+            if getattr(sample, name) >= 0:
+                values[name].append(float(getattr(sample, name)))
+    return {
+        name: {"lower_95": round(float(np.quantile(samples, 0.025)), 4), "upper_95": round(float(np.quantile(samples, 0.975)), 4), "n_resamples": len(samples)}
+        for name, samples in values.items() if samples
+    }

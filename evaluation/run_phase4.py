@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from calibration.temperature import TemperatureScaler, select_f1_threshold
 from datasets.mitbih import MITBIHDataset
-from evaluation.metrics import compute_metrics
+from evaluation.metrics import compute_metrics, grouped_bootstrap_confidence_intervals
 from evaluation.release_gate import ExternalReleaseGate
 from models.ecg_cnn import ECGCNN1D
 from preprocessing.ecg import ECGPreprocessor
@@ -60,7 +60,7 @@ def evaluate_mitbih(model, preprocessor, assessor, data_dir, threshold, model_ve
     windows = dataset.build_windows(window_seconds=10, stride_seconds=5, target_fs=250)
     records = {r.record_id: r for r in dataset.load_all_records() if r.is_valid}
     transformed_records = {}
-    signals, labels = [], []
+    signals, labels, groups = [], [], []
     for row in windows.itertuples():
         if row.record_id not in transformed_records:
             raw, fs, _, _ = dataset.load_signal_with_annotations(row.record_id)
@@ -70,13 +70,18 @@ def evaluate_mitbih(model, preprocessor, assessor, data_dir, threshold, model_ve
         if len(window) == 2500 and assessor.assess(window).is_usable:
             signals.append(window)
             labels.append(int(row.label_int))
+            groups.append(row.record_id)
     probabilities = predict(model, np.asarray(signals, dtype=np.float32))
     predictions = (probabilities >= threshold).astype(int)
-    return compute_metrics(
+    metrics = compute_metrics(
         np.asarray(labels), predictions, probabilities, split="external",
         model_name=f"calibrated_{model_version}", dataset="mitbih",
         notes="External validation only; no tuning or retraining.",
-    ).to_dict(), len(signals)
+    ).to_dict()
+    metrics["record_bootstrap_95ci"] = grouped_bootstrap_confidence_intervals(
+        np.asarray(labels), predictions, probabilities, np.asarray(groups)
+    )
+    return metrics, len(signals)
 
 
 def evaluate_noise(model, preprocessor, assessor, data_dir, threshold):
