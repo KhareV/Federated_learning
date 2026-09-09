@@ -179,7 +179,7 @@ def run_classical(data, output_dir, dataset, seed):
         logger.info("%s complete: validation F1=%s", name, result.get("val", {}).get("f1"))
 
 
-def run_cnn(data, output_dir, dataset, seed, epochs, batch_size, lr=0.001, patience=7, model_version="MODEL_V1"):
+def run_cnn(data, output_dir, dataset, seed, epochs, batch_size, lr=0.001, patience=7, model_version="MODEL_V1", label_mode="broad_diagnostic"):
     """Train the compact 1D CNN on the same locked arrays as the baselines."""
     from training.train_ecg_cnn import train_cnn
 
@@ -196,7 +196,8 @@ def run_cnn(data, output_dir, dataset, seed, epochs, batch_size, lr=0.001, patie
     with (cnn_dir / "run_metadata.json").open("w") as handle:
         json.dump({"experiment": f"ecg_cnn_{model_version}", "model_version": model_version, "dataset": dataset,
                    "seed": seed, "git_commit": _git_revision(),
-                   "preprocessing_artifact": str(output_dir / "preprocessing.json")},
+                   "preprocessing_artifact": str(output_dir / "preprocessing.json"),
+                   "label_mode": label_mode},
                   handle, indent=2)
 
 
@@ -215,9 +216,10 @@ def main():
     parser.add_argument("--cnn-lr", type=float, default=0.001)
     parser.add_argument("--cnn-patience", type=int, default=7)
     parser.add_argument("--model-version", default="MODEL_V1")
+    parser.add_argument("--label-mode", choices=["broad_diagnostic", "rhythm_conduction"], default="broad_diagnostic")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-    dataset = PTBXLDataset(data_dir=args.ptbxl, dataset_version="1.0.1")
+    dataset = PTBXLDataset(data_dir=args.ptbxl, dataset_version="1.0.1", label_mode=args.label_mode)
     if not dataset.is_available():
         raise SystemExit(f"PTB-XL is unavailable at {args.ptbxl}")
     manifest = load_locked_manifest(
@@ -233,7 +235,7 @@ def main():
         run_classical(data, output_dir, "ptbxl", args.seed)
     if args.models in ("cnn", "all"):
         run_cnn(data, output_dir, "ptbxl", args.seed, args.cnn_epochs, args.cnn_batch_size,
-                args.cnn_lr, args.cnn_patience, args.model_version)
+                args.cnn_lr, args.cnn_patience, args.model_version, args.label_mode)
 
 
 if __name__ == "__main__":

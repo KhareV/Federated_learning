@@ -48,6 +48,16 @@ PTBXL_SUPERCLASS_TO_CANONICAL = {
     "HYP":  "ABNORMAL",
 }
 
+# These statements are semantically comparable to the rhythm/conduction
+# phenomena represented by the MIT-BIH Arrhythmia annotations.  This is a
+# separate, versioned task; it must never silently replace the broad diagnostic
+# superclass mapping above.
+PTBXL_RHYTHM_CONDUCTION_CODES = {
+    "PVC", "PAC", "PRC(S)", "AFIB", "STACH", "SARRH", "SBRAD", "SVARR",
+    "BIGU", "AFLT", "SVTAC", "PSVT", "TRIGU", "LAFB", "LPFB", "IRBBB",
+    "CRBBB", "CLBBB", "ILBBB", "IVCD", "1AVB", "2AVB", "3AVB", "WPW",
+}
+
 CANONICAL_TO_INT = {"NORMAL": 0, "ABNORMAL": 1}
 
 # ─── Data Structures ─────────────────────────────────────────────────────────
@@ -119,12 +129,16 @@ class PTBXLDataset:
         target_lead: str = "II",
         preprocessing_version: str = "1.0.0",
         dataset_version: str = "1.0.1",
+        label_mode: str = "broad_diagnostic",
     ):
         self.data_dir = Path(data_dir)
         self.sampling_rate = sampling_rate
         self.target_lead = target_lead
         self.preprocessing_version = preprocessing_version
         self.dataset_version = dataset_version
+        if label_mode not in {"broad_diagnostic", "rhythm_conduction"}:
+            raise ValueError("label_mode must be 'broad_diagnostic' or 'rhythm_conduction'")
+        self.label_mode = label_mode
         self._records: Optional[List[PTBXLRecord]] = None
         self._metadata_df: Optional[pd.DataFrame] = None
         self._scp_statements: Optional[pd.DataFrame] = None
@@ -216,6 +230,22 @@ class PTBXLDataset:
         # Pick the highest-confidence superclass
         return max(superclass_scores, key=superclass_scores.get)
 
+    def resolve_label(self, scp_codes: dict, scp_df: pd.DataFrame) -> Tuple[Optional[str], Optional[str]]:
+        """Return the raw label and canonical class for the selected task."""
+        if self.label_mode == "broad_diagnostic":
+            superclass = self.resolve_superclass(scp_codes, scp_df)
+            return (superclass, PTBXL_SUPERCLASS_TO_CANONICAL.get(superclass) if superclass else None)
+
+        present = {code for code, score in scp_codes.items() if float(score) > 0}
+        abnormal = sorted(present & PTBXL_RHYTHM_CONDUCTION_CODES)
+        # An explicit abnormal rhythm/conduction statement takes precedence
+        # over NORM if both are present in the original annotation payload.
+        if abnormal:
+            return ("RHYTHM_CONDUCTION:" + ",".join(abnormal), "ABNORMAL")
+        if "NORM" in present:
+            return ("NORM", "NORMAL")
+        return (None, None)
+
     # ── Record Loading ────────────────────────────────────────────────────────
 
     def load_all_records(self, max_records: Optional[int] = None) -> List[PTBXLRecord]:
@@ -275,14 +305,9 @@ class PTBXLDataset:
         if not isinstance(scp_codes, dict):
             scp_codes = {}
 
-        superclass = self.resolve_superclass(scp_codes, scp_df)
-        if superclass is None:
-            raise ValueError(f"Could not resolve superclass for ecg_id={ecg_id}")
-
-        if superclass not in PTBXL_SUPERCLASS_TO_CANONICAL:
-            raise ValueError(f"Unknown superclass '{superclass}'")
-
-        canonical = PTBXL_SUPERCLASS_TO_CANONICAL[superclass]
+        raw_label, canonical = self.resolve_label(scp_codes, scp_df)
+        if raw_label is None or canonical is None:
+            raise ValueError(f"Could not resolve {self.label_mode} label for ecg_id={ecg_id}")
         label_int = CANONICAL_TO_INT[canonical]
 
         # Build file path
@@ -319,7 +344,7 @@ class PTBXLDataset:
             n_samples=n_samples,
             n_leads=n_leads,
             lead_names=lead_names,
-            label_raw=superclass,
+            label_raw=raw_label,
             label_canonical=canonical,
             label_int=label_int,
             age=row.get("age", None),
