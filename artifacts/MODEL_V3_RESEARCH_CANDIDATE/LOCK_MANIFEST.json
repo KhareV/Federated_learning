@@ -1,0 +1,54 @@
+{
+  "model_version": "MODEL_V3",
+  "source_revision": "527a02ede1b6502af36c88f43ff133fc20b76d95",
+  "release_status": "BLOCKED_EXTERNAL_GATE",
+  "external_release_gate": {
+    "status": "FAIL",
+    "thresholds": {
+      "auroc": 0.8,
+      "sensitivity": 0.7,
+      "specificity": 0.7
+    },
+    "observed": {
+      "auroc": 0.7774,
+      "sensitivity": 0.9968,
+      "specificity": 0.1263
+    },
+    "checks": {
+      "auroc": false,
+      "recall": true,
+      "specificity": false
+    },
+    "missing_metrics": []
+  },
+  "artifacts": {
+    "checkpoint": {
+      "path": "experiments/centralized_ecg_v3/ecg_cnn_MODEL_V3/best_checkpoint.pt",
+      "sha256": "01ff9219c87ff0fd1df8e5201c657934717786aeeff4900147da308c5d85c24c"
+    },
+    "preprocessing": {
+      "path": "experiments/centralized_ecg_v3/preprocessing.json",
+      "sha256": "d3715fd450d42e7f96685a43644cffa570a7ee3b6402285da395435018986ae8"
+    },
+    "calibration": {
+      "path": "experiments/centralized_ecg_v3_evaluation/temperature_scaling.json",
+      "sha256": "4be5173a9e00adf18acc91db614a496d0d52613020efc441c4974fbdc436d249"
+    },
+    "threshold": {
+      "path": "experiments/centralized_ecg_v3_evaluation/threshold.json",
+      "sha256": "04f9d6b233a860131adf0ebb2d2efe4a59c95b08a60cec702fdd6af8980bfcd5"
+    },
+    "report": {
+      "path": "experiments/centralized_ecg_v3_evaluation/phase4_report.json",
+      "sha256": "34d6c6c3615f8832bd885240133a5b66afa936a3157fbd7e7b19ec5487ce520f"
+    },
+    "dataset_manifest": {
+      "path": "data/manifests/ptbxl_manifest.csv",
+      "sha256": "4fe9f062ec045e41b59b9f5e36970bc08df80c990d628a3c950f73e09b7143e3"
+    },
+    "split_manifest": {
+      "path": "data/splits/ptbxl_splits.csv",
+      "sha256": "8c6837b0fe0e8809f3bdd217671075cbbc40eade26d0e39557dc3a5c3ffed6d6"
+    }
+  }
+}

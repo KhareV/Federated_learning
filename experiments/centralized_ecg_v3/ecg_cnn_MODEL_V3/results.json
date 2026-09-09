@@ -1,0 +1,26 @@
+{
+  "experiment": "E04_ecg_cnn",
+  "model_version": "MODEL_V3",
+  "best_val_f1": 0.8434,
+  "test": {
+    "accuracy": 0.8206,
+    "precision": 0.8439,
+    "recall": 0.8355,
+    "f1": 0.8396,
+    "specificity": 0.8014,
+    "false_positive_rate": 0.1986,
+    "auroc": 0.9038,
+    "auprc": 0.9336,
+    "tp": 1508,
+    "tn": 1126,
+    "fp": 279,
+    "fn": 297,
+    "n_total": 3210,
+    "n_normal": 1405,
+    "n_abnormal": 1805,
+    "split": "test",
+    "model_name": "ecg_cnn_MODEL_V3",
+    "dataset": "ptbxl",
+    "notes": ""
+  }
+}

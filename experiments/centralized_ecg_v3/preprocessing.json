@@ -1,0 +1,25 @@
+{
+  "config": {
+    "bandpass_high": 40.0,
+    "bandpass_low": 0.5,
+    "clip_std_multiplier": 5.0,
+    "filter_order": 4,
+    "normalization_fitted": true,
+    "normalization_stats": {
+      "mean": -5.626962320093298e-06,
+      "n_samples_used": 37597500,
+      "preprocessing_version": "1.0.0",
+      "std": 0.14317958056926727
+    },
+    "notch_freq": 50.0,
+    "notch_q": 30.0,
+    "preprocessing_version": "1.0.0",
+    "target_fs": 250
+  },
+  "normalization": {
+    "mean": -5.626962320093298e-06,
+    "n_samples_used": 37597500,
+    "preprocessing_version": "1.0.0",
+    "std": 0.14317958056926727
+  }
+}
