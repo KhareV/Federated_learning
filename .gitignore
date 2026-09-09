@@ -1,27 +1,20 @@
-# Python & Testing
-__pycache__/
-*.pyc
-.pytest_cache/
-.benchmarks/
-venv/
-.venv/
-
-# Local Database
-health_monitor.db
-
-# Raw Datasets
-data/raw/
+# Local datasets and derived data (raw inputs are immutable and not committed)
+data/raw/*
+!data/raw/.gitkeep
 data/processed/
-!data/.gitkeep
+data/standardized/
+data/features/
+data/manifests/*.json
+data/splits/
 
-# Heavy Model Checkpoints
-experiments/**/*.pt
-experiments/**/*.pkl
-
-# Frontend
+# Frontend generated dependencies/build output
 frontend/node_modules/
-frontend/dist/
+frontend/.svelte-kit/
+frontend/build/
+frontend-legacy/node_modules/
 
-# Environment Variables & IDE
-.env
-.vscode/
+# Local runtime artifacts
+*.db
+*.sqlite
+logs/
+.DS_Store

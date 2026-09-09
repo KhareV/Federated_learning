@@ -1,12 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float, JSON, DateTime
+from sqlalchemy import Column, Integer, String, JSON, DateTime
 from backend.db.database import Base
 from datetime import datetime
-
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    role = Column(String)
 
 class SystemEvent(Base):
     __tablename__ = "system_events"

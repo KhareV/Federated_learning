@@ -1,8 +1,8 @@
-# QAPFL Health Monitor Platform
+# NHM Centralized Health Monitor Platform
 
 ## Non-Invasive Continuous Health Monitor with Federated Learning
 
-**Quality-Aware Personalized Federated Learning (QAPFL) for Multimodal Wearable Health Monitoring**
+**Centralized software-first multimodal health-monitoring research prototype**
 
 > ⚠️ **MEDICAL DISCLAIMER**: This software is an engineering research prototype. It is NOT intended for medical diagnosis, treatment, or emergency decision-making. All outputs are research results only.
 
@@ -16,9 +16,9 @@ This platform is a final-year engineering research prototype implementing:
 - **Signal Quality Index (SQI) assessment** with quality-aware confidence
 - **Anomaly detection** using Isolation Forest, XGBoost, and LSTM Autoencoder
 - **Personalized baseline learning** per user
-- **Federated Learning** with FedAvg, Personalized FL, and the proposed **QAPFL**
+- **Federated Learning** is deferred until the centralized system is locked
 - **Research experiment framework** (noise robustness, ablation study, model comparison)
-- **Professional React dashboard** with 33+ pages
+- **SvelteKit dashboard** (the active frontend; the legacy frontend is excluded)
 
 ### Research Novelty: QAPFL
 
@@ -39,7 +39,7 @@ Where α, β, γ, δ are configurable weights. Clients with poor signal quality,
 health-monitor-platform/
 ├── backend/
 │   ├── api/routes/          # FastAPI routes (12 files, 50+ endpoints)
-│   ├── core/                # Auth, config, logging, WebSocket
+│   ├── core/                # Config, logging, WebSocket
 │   ├── db/                  # SQLAlchemy models (16 tables)
 │   ├── experiments/         # Experiment runner, noise robustness, ablation
 │   ├── federated/           # FL server, FedAvg, PersonalizedFL, QAPFL
@@ -118,16 +118,6 @@ npm run dev
 
 Frontend will be available at: http://localhost:5173
 
-### Login
-
-| Role | Username | Password | Access |
-|------|----------|----------|--------|
-| Administrator | `admin` | `admin123` | Full access |
-| Researcher | `researcher` | `research123` | AI, FL, experiments |
-| User | `user` | `user123` | Personal health data |
-
----
-
 ## Docker Setup
 
 ```bash
@@ -174,21 +164,12 @@ tests/test_sqi.py::test_noisy_ecg_low_sqi PASSED
 
 Follow these steps for the complete demonstration:
 
-1. **Login** → admin/admin123
-2. **Overview** → See real-time stat cards and trend charts
-3. **Live Monitoring** → Start simulator, view scrolling ECG/PPG waveforms, live HR and SpO₂
-4. **Signal Quality** → View ECG SQI, PPG SQI, quality timeline
-5. **Introduce noise** → Increase noise level in simulator → watch SQI decrease
-6. **Anomaly Detection** → Verify noisy data produces LOW_CONFIDENCE not HIGH_CONFIDENCE
-7. **Inject anomaly** → Enable physiological anomaly → watch anomaly score rise
-8. **Explainable AI** → View feature contributions (SHAP-like)
-9. **Personalized Baseline** → View deviation from learned baseline
-10. **FL Overview** → Start FL training (select QAPFL strategy)
-11. **FL Clients** → See 8 clients with different signal qualities
-12. **FL Aggregation** → Compare FedAvg (equal weights) vs QAPFL (quality-weighted)
-13. **Robustness Testing** → Run noise robustness experiment → compare FedAvg vs QAPFL curves
-14. **Ablation Study** → Run configurations A→E → see each QAPFL component's contribution
-15. **Reports** → Generate and export research report
+1. **Overview** → See monitored signal and system state
+2. **Live Monitoring** → Start deterministic replay/simulator data
+3. **Signal Quality** → Inspect ECG/PPG quality and usable-window decisions
+4. **Centralized Inference** → Review model output with confidence and provenance
+5. **Research Results** → Inspect reproducible centralized experiment artifacts
+6. **Reports** → Generate and export research reports
 
 ---
 
@@ -292,7 +273,6 @@ Key endpoints:
 
 | Endpoint | Description |
 |----------|-------------|
-| `POST /auth/login` | Get JWT token |
 | `GET /monitoring/live/{client_id}` | Latest sensor readings |
 | `POST /monitoring/simulate/start` | Start client simulator |
 | `GET /fl/status` | FL system status |
@@ -386,9 +366,9 @@ All parameters can also be changed via the Settings page in the dashboard.
 
 ## Limitations
 
-1. **Synthetic data only**: All physiological data is mathematically generated. Results are for algorithm validation, not clinical performance claims.
+1. **Dataset status**: PTB-XL, MIT-BIH Arrhythmia, MIT-BIH Noise Stress, and BIDMC are registered under `data/raw/` and structurally validated. Synthetic data is restricted to tests, smoke runs, and explicitly labelled UI replay; it is not research evidence.
 2. **In-process FL simulation**: FL uses in-process simulation, not real network communication. Communication costs are estimated based on model size.
-3. **LSTM Autoencoder**: The LSTM model uses simulated training due to synthetic data. In a real deployment, it would be trained on actual physiological recordings.
+3. **Model status**: Real-dataset baselines and the locked centralized model are still pending implementation; existing demo artifacts must not be interpreted as scientific results.
 4. **No real cryptography**: FL updates use simulated transmission. Production would require TLS and optionally differential privacy.
 5. **Not a medical device**: This system has NOT been validated for clinical use and must not be used for healthcare decisions.
 

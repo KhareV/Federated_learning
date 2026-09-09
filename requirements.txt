@@ -4,10 +4,7 @@ uvicorn[standard]
 sqlalchemy[asyncio]
 aiosqlite
 pydantic-settings
-python-jose[cryptography]
-passlib[bcrypt]
 websockets
-python-multipart
 httpx
 aiofiles
 

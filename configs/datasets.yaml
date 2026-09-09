@@ -1,0 +1,49 @@
+# Canonical dataset registry for NHM.
+# Raw dataset directories are immutable inputs and are intentionally excluded
+# from source control. Change a version only after verifying the supplied files.
+
+registry_version: "1.0.0"
+
+datasets:
+  ptbxl:
+    display_name: "PTB-XL"
+    version: "1.0.1"
+    root: "data/raw/ptbxl"
+    source: "PhysioNet PTB-XL"
+    role: "centralized_ecg_development"
+    native_sampling_rates_hz: [100, 500]
+    preferred_sampling_rate_hz: 500
+    preferred_lead: "II"
+    metadata_files: ["ptbxl_database.csv", "scp_statements.csv"]
+
+  mitbih:
+    display_name: "MIT-BIH Arrhythmia Database"
+    version: "1.0.0"
+    root: "data/raw/mitbih"
+    source: "PhysioNet MIT-BIH Arrhythmia Database"
+    role: "external_ecg_validation"
+    native_sampling_rate_hz: 360
+    preferred_lead: "MLII"
+    annotation_extension: "atr"
+
+  mitbih_noise_stress:
+    display_name: "MIT-BIH Noise Stress Test Database"
+    version: "1.0.0"
+    root: "data/raw/mitbih_noise_stress"
+    source: "PhysioNet MIT-BIH Noise Stress Test Database"
+    role: "ecg_noise_robustness"
+    native_sampling_rate_hz: 360
+    snr_levels_db: [24, 18, 12, 6, 0, -6]
+    file_format: "mat"
+
+  bidmc:
+    display_name: "BIDMC PPG and Respiration Dataset"
+    version: "1.0.0"
+    root: "data/raw/bidmc"
+    source: "PhysioNet BIDMC PPG and Respiration Dataset"
+    role: "multimodal_alignment_and_quality"
+    waveform_sampling_rate_hz: 125
+    numeric_sampling_rate_hz: 1
+    modalities: ["ECG", "PPG", "RESP", "HR", "PULSE", "SpO2"]
+    csv_export_root: "bidmc_csv"
+

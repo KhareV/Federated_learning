@@ -58,6 +58,20 @@ class SQIResult:
     fair_threshold: float = 40.0
     reject_threshold: float = 20.0
 
+    @property
+    def canonical_state(self) -> str:
+        """Contract-level acquisition state used by inference and APIs.
+
+        The legacy four-level ``quality_state`` remains available for
+        compatibility, while the canonical contract deliberately distinguishes
+        usable acquisition from an unreliable signal.
+        """
+        if not self.is_usable or self.quality_state == "POOR":
+            return "UNRELIABLE"
+        if self.quality_state == "FAIR":
+            return "DEGRADED"
+        return "GOOD"
+
 
 # ─── SQI Calculator ───────────────────────────────────────────────────────────
 
@@ -293,6 +307,7 @@ class ECGQualityAssessor:
             "clipping_score": result.clipping_score,
             "flatline_score": result.flatline_score,
             "quality_state": result.quality_state,
+            "canonical_state": result.canonical_state,
             "is_usable": result.is_usable,
             "low_quality_reasons": "; ".join(result.low_quality_reasons),
         }

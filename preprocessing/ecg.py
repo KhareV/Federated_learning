@@ -23,7 +23,9 @@ Do NOT create separate pipelines for different datasets.
 """
 
 import logging
+import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional, Tuple, Dict, Any
 
 import numpy as np
@@ -152,6 +154,42 @@ class ECGPreprocessor:
         self._bp_sos = self._make_bandpass_sos(target_fs)
         self._notch_b, self._notch_a = self._make_notch_ba(target_fs)
 
+    @property
+    def is_fitted(self) -> bool:
+        """Whether frozen training-only normalization statistics are loaded."""
+        return self.normalization_stats is not None
+
+    def fit(self, training_signals: list, source_fs: int = TARGET_FS) -> "ECGPreprocessor":
+        """Fit normalization statistics using training signals only.
+
+        Filtering and resampling happen before fitting, so the statistics match
+        the representation consumed by the model. Validation, test, and
+        inference data must only use :meth:`transform` after this call.
+        """
+        if not training_signals:
+            raise ValueError("At least one training signal is required")
+        canonical = [self._prepare_signal(sig, source_fs) for sig in training_signals]
+        canonical = [sig for sig in canonical if len(sig) > 0 and np.isfinite(sig).all()]
+        if not canonical:
+            raise ValueError("Training signals contain no valid samples")
+        self.normalization_stats = NormalizationStats.from_signals(canonical)
+        return self
+
+    def save_normalization_stats(self, path) -> None:
+        """Persist frozen training statistics as an auditable JSON artifact."""
+        if not self.is_fitted:
+            raise RuntimeError("Fit the preprocessor before saving statistics")
+        payload = {"config": self.config_dict, "normalization": self.normalization_stats.to_dict()}
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        Path(path).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+
+    @classmethod
+    def load_normalization_stats(cls, path, **kwargs) -> "ECGPreprocessor":
+        """Load a preprocessor with frozen statistics; never refits them."""
+        payload = json.loads(Path(path).read_text())
+        stats_payload = payload.get("normalization", payload)
+        return cls(normalization_stats=NormalizationStats.from_dict(stats_payload), **kwargs)
+
     # ── Filter Coefficient Computation ───────────────────────────────────────
 
     def _make_bandpass_sos(self, fs: int):
@@ -189,6 +227,40 @@ class ECGPreprocessor:
         down = ratio.denominator
         resampled = scipy_signal.resample_poly(sig, up, down)
         return resampled.astype(np.float32)
+
+    def _prepare_signal(self, raw_signal: np.ndarray, source_fs: int) -> np.ndarray:
+        """Validate, resample, and filter without normalization."""
+        sig = np.asarray(raw_signal, dtype=np.float32).flatten()
+        if len(sig) == 0:
+            return sig
+        if not np.isfinite(sig).all():
+            sig = np.where(np.isfinite(sig), sig, 0.0).astype(np.float32)
+        if source_fs <= 0:
+            raise ValueError("source_fs must be positive")
+        if source_fs != self.target_fs:
+            sig = self.resample(sig, source_fs)
+        try:
+            sig = self.apply_bandpass(sig)
+        except Exception as exc:
+            logger.warning("Bandpass failed during preparation: %s", exc)
+        try:
+            sig = self.apply_notch(sig)
+        except Exception as exc:
+            logger.warning("Notch failed during preparation: %s", exc)
+        return sig.astype(np.float32)
+
+    def transform(
+        self, raw_signal: np.ndarray, source_fs: int,
+        record_id: str = "unknown", source_dataset: str = "unknown",
+    ) -> PreprocessedECG:
+        """Transform a signal using frozen training statistics.
+
+        This is the required validation/test/inference entry point and refuses
+        to perform per-signal normalization when the preprocessor is unfitted.
+        """
+        if not self.is_fitted:
+            raise RuntimeError("ECGPreprocessor must be fit on training data before transform")
+        return self._process(raw_signal, source_fs, record_id, source_dataset)
 
     # ── Individual Filter Steps ───────────────────────────────────────────────
 
@@ -270,6 +342,17 @@ class ECGPreprocessor:
         -------
         PreprocessedECG
         """
+        # Compatibility entry point for existing smoke tests and training code.
+        # New code must call fit() once and transform() thereafter.
+        if self.is_fitted:
+            return self._process(raw_signal, source_fs, record_id, source_dataset)
+        logger.warning("Using legacy per-signal normalization; fit before research use")
+        return self._process(raw_signal, source_fs, record_id, source_dataset, allow_unfitted=True)
+
+    def _process(
+        self, raw_signal: np.ndarray, source_fs: int,
+        record_id: str, source_dataset: str, allow_unfitted: bool = False,
+    ) -> PreprocessedECG:
         # ── Step 0: Input validation ──────────────────────────────────────────
         issues = []
         sig = np.array(raw_signal, dtype=np.float32).flatten()
@@ -291,24 +374,13 @@ class ECGPreprocessor:
             issues.append(f"Replaced {n_bad} NaN/Inf values with 0")
             sig = np.where(np.isfinite(sig), sig, 0.0)
 
-        # ── Step 1: Resample ─────────────────────────────────────────────────
+        # ── Steps 1–3: Resample and filter ────────────────────────────────────
         was_resampled = source_fs != self.target_fs
-        if was_resampled:
-            sig = self.resample(sig, source_fs)
-
-        # ── Step 2: Bandpass filter ───────────────────────────────────────────
-        try:
-            sig = self.apply_bandpass(sig)
-        except Exception as exc:
-            issues.append(f"Bandpass failed: {exc}")
-
-        # ── Step 3: Notch filter ──────────────────────────────────────────────
-        try:
-            sig = self.apply_notch(sig)
-        except Exception as exc:
-            issues.append(f"Notch failed: {exc}")
+        sig = self._prepare_signal(sig, source_fs)
 
         # ── Step 4: Normalize ─────────────────────────────────────────────────
+        if not self.is_fitted and not allow_unfitted:
+            raise RuntimeError("ECGPreprocessor must be fit before normalization")
         sig, norm_mean, norm_std = self.normalize(sig)
 
         # ── Step 5: Clip ──────────────────────────────────────────────────────
@@ -341,6 +413,8 @@ class ECGPreprocessor:
             "notch_q": self.notch_q,
             "clip_std_multiplier": self.clip_std_multiplier,
             "filter_order": self.filter_order,
+            "normalization_fitted": self.is_fitted,
+            "normalization_stats": self.normalization_stats.to_dict() if self.is_fitted else None,
         }
 
 

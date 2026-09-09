@@ -1,10 +1,10 @@
 """
 datasets/ptbxl.py — PTB-XL Dataset Loader
 ==========================================
-Loads the PTB-XL ECG dataset (PhysioNet, v1.0.2) using WFDB.
+Loads the PTB-XL ECG dataset (PhysioNet, v1.0.1) using WFDB.
 
 Official source:
-  https://physionet.org/content/ptb-xl/1.0.2/
+  https://physionet.org/content/ptb-xl/1.0.1/
 
 Expected local path (configurable):
   data/raw/ptbxl/
@@ -13,7 +13,7 @@ Download instructions:
   pip install wfdb
   python -c "import wfdb; wfdb.dl_database('ptb-xl', dl_dir='data/raw/ptbxl')"
   -- OR --
-  wget -r -N -c -np https://physionet.org/files/ptb-xl/1.0.2/ -P data/raw/ptbxl
+  wget -r -N -c -np https://physionet.org/files/ptb-xl/1.0.1/ -P data/raw/ptbxl
 
 Canonical label mapping:
   NORM  → NORMAL  (0)
@@ -68,7 +68,7 @@ class PTBXLRecord:
     age: Optional[float] = None
     sex: Optional[str] = None
     source_dataset: str = "ptbxl"
-    dataset_version: str = "1.0.2"
+    dataset_version: str = "1.0.1"
     file_path: str = ""
     is_valid: bool = True
     validation_notes: List[str] = field(default_factory=list)
@@ -118,11 +118,13 @@ class PTBXLDataset:
         sampling_rate: int = 500,
         target_lead: str = "II",
         preprocessing_version: str = "1.0.0",
+        dataset_version: str = "1.0.1",
     ):
         self.data_dir = Path(data_dir)
         self.sampling_rate = sampling_rate
         self.target_lead = target_lead
         self.preprocessing_version = preprocessing_version
+        self.dataset_version = dataset_version
         self._records: Optional[List[PTBXLRecord]] = None
         self._metadata_df: Optional[pd.DataFrame] = None
         self._scp_statements: Optional[pd.DataFrame] = None
@@ -296,21 +298,34 @@ class PTBXLDataset:
 
         file_path = str(self.data_dir / rel_path)
 
+        # Read the authoritative length and sampling metadata from the WFDB
+        # header.  ``recording_date`` is a timestamp and must never be used as
+        # a numeric signal-length field.
+        try:
+            import wfdb
+            header = wfdb.rdheader(str(self.data_dir / rel_path))
+            n_samples = int(header.sig_len)
+            actual_sampling_rate = int(round(float(header.fs)))
+            n_leads = int(header.n_sig)
+            lead_names = list(header.sig_name)
+        except Exception as exc:
+            raise ValueError(f"Could not read WFDB header for ecg_id={ecg_id}: {exc}")
+
         return PTBXLRecord(
             record_id=rel_path,
             participant_id=str(int(row.get("patient_id", 0))),
             ecg_id=int(ecg_id),
-            sampling_rate=self.sampling_rate,
-            n_samples=int(row.get("recording_date", 0)),  # placeholder; actual from wfdb
-            n_leads=12,
-            lead_names=self.LEAD_NAMES,
+            sampling_rate=actual_sampling_rate,
+            n_samples=n_samples,
+            n_leads=n_leads,
+            lead_names=lead_names,
             label_raw=superclass,
             label_canonical=canonical,
             label_int=label_int,
             age=row.get("age", None),
             sex=row.get("sex", None),
             source_dataset="ptbxl",
-            dataset_version="1.0.2",
+            dataset_version=self.dataset_version,
             file_path=file_path,
             is_valid=True,
         )
