@@ -40,7 +40,7 @@ def predict(model, signals, batch_size=256):
     return np.asarray(values, dtype=float)
 
 
-def evaluate_locked(model, data, calibrator, threshold, dataset_name):
+def evaluate_locked(model, data, calibrator, threshold, dataset_name, model_version):
     output = {}
     for split in ("val", "test"):
         signals, labels = data[split]
@@ -49,13 +49,13 @@ def evaluate_locked(model, data, calibrator, threshold, dataset_name):
         predictions = (probabilities >= threshold).astype(int)
         output[split] = compute_metrics(
             labels, predictions, probabilities, split=split,
-            model_name="calibrated_MODEL_V1", dataset=dataset_name,
+            model_name=f"calibrated_{model_version}", dataset=dataset_name,
         ).to_dict()
         output[split]["brier_score"] = round(float(brier_score_loss(labels, probabilities)), 6)
     return output
 
 
-def evaluate_mitbih(model, preprocessor, assessor, data_dir, threshold):
+def evaluate_mitbih(model, preprocessor, assessor, data_dir, threshold, model_version):
     dataset = MITBIHDataset(data_dir=data_dir)
     windows = dataset.build_windows(window_seconds=10, stride_seconds=5, target_fs=250)
     records = {r.record_id: r for r in dataset.load_all_records() if r.is_valid}
@@ -74,7 +74,7 @@ def evaluate_mitbih(model, preprocessor, assessor, data_dir, threshold):
     predictions = (probabilities >= threshold).astype(int)
     return compute_metrics(
         np.asarray(labels), predictions, probabilities, split="external",
-        model_name="calibrated_MODEL_V1", dataset="mitbih",
+        model_name=f"calibrated_{model_version}", dataset="mitbih",
         notes="External validation only; no tuning or retraining.",
     ).to_dict(), len(signals)
 
@@ -134,6 +134,7 @@ def main():
     output = Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)
     model, checkpoint = ECGCNN1D.load_checkpoint(args.model, device="cpu")
+    model_version = checkpoint["config"]["model_version"]
     preprocessor = ECGPreprocessor.load_normalization_stats(args.preprocessing)
     assessor = ECGQualityAssessor(fs=250)
 
@@ -146,12 +147,14 @@ def main():
     calibrator.save(output / "temperature_scaling.json")
     (output / "threshold.json").write_text(json.dumps({"threshold": threshold, "selection": "validation_max_f1_then_sensitivity"}, indent=2) + "\n")
     report = {
-        "model_version": checkpoint["config"]["model_version"],
+        "model_version": model_version,
         "calibration": calibrator.to_dict(),
         "threshold": threshold,
-        "ptbxl": evaluate_locked(model, data, calibrator, threshold, "ptbxl"),
+        "ptbxl": evaluate_locked(model, data, calibrator, threshold, "ptbxl", model_version),
     }
-    report["mitbih"], report["mitbih_n_windows"] = evaluate_mitbih(model, preprocessor, assessor, args.mitbih, threshold)
+    report["mitbih"], report["mitbih_n_windows"] = evaluate_mitbih(
+        model, preprocessor, assessor, args.mitbih, threshold, model_version
+    )
     report["external_release_gate"] = ExternalReleaseGate().evaluate(report["mitbih"])
     report["release_status"] = "ELIGIBLE" if report["external_release_gate"]["status"] == "PASS" else "BLOCKED_EXTERNAL_GATE"
     report["noise_stress"] = evaluate_noise(model, preprocessor, assessor, args.noise, threshold)

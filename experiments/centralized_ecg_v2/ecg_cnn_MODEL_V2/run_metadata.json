@@ -1,0 +1,8 @@
+{
+  "experiment": "ecg_cnn_MODEL_V2",
+  "model_version": "MODEL_V2",
+  "dataset": "ptbxl",
+  "seed": 42,
+  "git_commit": "d78a0cd69ef3a4889585cf8f827c4b754215fa7c",
+  "preprocessing_artifact": "experiments/centralized_ecg_v2/preprocessing.json"
+}

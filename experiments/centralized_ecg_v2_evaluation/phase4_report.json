@@ -1,0 +1,188 @@
+{
+  "model_version": "MODEL_V2",
+  "calibration": {
+    "method": "temperature_scaling",
+    "temperature": 1.5263760062526268
+  },
+  "threshold": 0.5252695821216419,
+  "ptbxl": {
+    "val": {
+      "accuracy": 0.8262,
+      "precision": 0.8476,
+      "recall": 0.8508,
+      "f1": 0.8492,
+      "specificity": 0.7927,
+      "false_positive_rate": 0.2073,
+      "auroc": 0.9035,
+      "auprc": 0.9353,
+      "tp": 1557,
+      "tn": 1071,
+      "fp": 280,
+      "fn": 273,
+      "n_total": 3181,
+      "n_normal": 1351,
+      "n_abnormal": 1830,
+      "split": "val",
+      "model_name": "calibrated_MODEL_V2",
+      "dataset": "ptbxl",
+      "notes": "",
+      "brier_score": 0.127655
+    },
+    "test": {
+      "accuracy": 0.809,
+      "precision": 0.8246,
+      "recall": 0.8388,
+      "f1": 0.8316,
+      "specificity": 0.7708,
+      "false_positive_rate": 0.2292,
+      "auroc": 0.8988,
+      "auprc": 0.9306,
+      "tp": 1514,
+      "tn": 1083,
+      "fp": 322,
+      "fn": 291,
+      "n_total": 3210,
+      "n_normal": 1405,
+      "n_abnormal": 1805,
+      "split": "test",
+      "model_name": "calibrated_MODEL_V2",
+      "dataset": "ptbxl",
+      "notes": "",
+      "brier_score": 0.132807
+    }
+  },
+  "mitbih": {
+    "accuracy": 0.3628,
+    "precision": 0.276,
+    "recall": 0.9766,
+    "f1": 0.4304,
+    "specificity": 0.162,
+    "false_positive_rate": 0.838,
+    "auroc": 0.7614,
+    "auprc": 0.5239,
+    "tp": 3924,
+    "tn": 1990,
+    "fp": 10294,
+    "fn": 94,
+    "n_total": 16302,
+    "n_normal": 12284,
+    "n_abnormal": 4018,
+    "split": "external",
+    "model_name": "calibrated_MODEL_V2",
+    "dataset": "mitbih",
+    "notes": "External validation only; no tuning or retraining."
+  },
+  "mitbih_n_windows": 16302,
+  "external_release_gate": {
+    "status": "FAIL",
+    "thresholds": {
+      "auroc": 0.8,
+      "sensitivity": 0.7,
+      "specificity": 0.7
+    },
+    "observed": {
+      "auroc": 0.7614,
+      "sensitivity": 0.9766,
+      "specificity": 0.162
+    },
+    "checks": {
+      "auroc": false,
+      "recall": true,
+      "specificity": false
+    },
+    "missing_metrics": []
+  },
+  "release_status": "BLOCKED_EXTERNAL_GATE",
+  "noise_stress": {
+    "24": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.12038580246913,
+      "predicted_abnormal_fraction": 0.9831790123456791,
+      "mean_probability_abnormal": 0.7619299182093437,
+      "probability_standard_deviation": 0.08563480480039197,
+      "quality_state_counts": {
+        "DEGRADED": 6266,
+        "GOOD": 214
+      },
+      "labels_available": false,
+      "note": "Noise Stress Test labels are not compatible with the supervised binary target; classification metrics are intentionally not reported. Quality state and prediction stability are reported instead."
+    },
+    "18": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.20834413580247,
+      "predicted_abnormal_fraction": 0.9830246913580247,
+      "mean_probability_abnormal": 0.770358237237842,
+      "probability_standard_deviation": 0.08581997267401657,
+      "quality_state_counts": {
+        "DEGRADED": 6283,
+        "GOOD": 197
+      },
+      "labels_available": false,
+      "note": "Noise Stress Test labels are not compatible with the supervised binary target; classification metrics are intentionally not reported. Quality state and prediction stability are reported instead."
+    },
+    "12": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.33180401234567,
+      "predicted_abnormal_fraction": 0.9825617283950617,
+      "mean_probability_abnormal": 0.7760039742806075,
+      "probability_standard_deviation": 0.08817250663683113,
+      "quality_state_counts": {
+        "DEGRADED": 6283,
+        "GOOD": 197
+      },
+      "labels_available": false,
+      "note": "Noise Stress Test labels are not compatible with the supervised binary target; classification metrics are intentionally not reported. Quality state and prediction stability are reported instead."
+    },
+    "6": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.48458333333333,
+      "predicted_abnormal_fraction": 0.9820987654320987,
+      "mean_probability_abnormal": 0.779547737594004,
+      "probability_standard_deviation": 0.0921745457077188,
+      "quality_state_counts": {
+        "DEGRADED": 6261,
+        "GOOD": 219
+      },
+      "labels_available": false,
+      "note": "Noise Stress Test labels are not compatible with the supervised binary target; classification metrics are intentionally not reported. Quality state and prediction stability are reported instead."
+    },
+    "0": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.64929320987654,
+      "predicted_abnormal_fraction": 0.9817901234567902,
+      "mean_probability_abnormal": 0.7804732940631148,
+      "probability_standard_deviation": 0.09586533606259662,
+      "quality_state_counts": {
+        "DEGRADED": 6179,
+        "GOOD": 301
+      },
+      "labels_available": false,
+      "note": "Noise Stress Test labels are not compatible with the supervised binary target; classification metrics are intentionally not reported. Quality state and prediction stability are reported instead."
+    },
+    "-6": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.81419135802469,
+      "predicted_abnormal_fraction": 0.9822530864197531,
+      "mean_probability_abnormal": 0.7811811074476551,
+      "probability_standard_deviation": 0.09795756114528086,
+      "quality_state_counts": {
+        "DEGRADED": 6108,
+        "GOOD": 372
+      },
+      "labels_available": false,
+      "note": "Noise Stress Test labels are not compatible with the supervised binary target; classification metrics are intentionally not reported. Quality state and prediction stability are reported instead."
+    }
+  }
+}

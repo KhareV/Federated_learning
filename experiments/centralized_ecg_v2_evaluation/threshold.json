@@ -1,0 +1,4 @@
+{
+  "threshold": 0.5252695821216419,
+  "selection": "validation_max_f1_then_sensitivity"
+}
