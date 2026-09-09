@@ -50,7 +50,7 @@ federated learning, secure aggregation, DP, and edge optimization.
 | 7 | Hosted model, database, and backend API contracts | **Complete** | `docs/PHASE7_HOSTED_BACKEND_REPORT.md`; session/inference persistence integration tests; 98 total tests passed |
 | 8 | SvelteKit routes use backend data; no fabricated metrics | **Complete** | `docs/PHASE8_FRONTEND_RECONCILIATION_REPORT.md`; Svelte type-check: 0 errors; production build passed |
 | 9 | Software-only replay reaches the frontend end to end | **Complete** | `docs/PHASE9_SOFTWARE_E2E_REPORT.md`; replay/API persistence, WebSocket handshake, full Python suite, frontend check/build |
-| 10 | `CENTRALIZED_SYSTEM_V1` artifact and evidence bundle | Pending | Not started |
+| 10 | `CENTRALIZED_SYSTEM_V1` artifact and evidence bundle | **Complete** | `docs/CENTRALIZED_SYSTEM_V1.md`; checksummed lock manifest at `artifacts/CENTRALIZED_SYSTEM_V1/LOCK_MANIFEST.json`; all phase gates verified |
 
 ## Phase 0 deliverables
 

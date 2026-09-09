@@ -1,0 +1,34 @@
+{
+  "system_version": "CENTRALIZED_SYSTEM_V1",
+  "status": "locked",
+  "scope": "centralized software-only research prototype",
+  "model_version": "MODEL_V1",
+  "backend_frontend_compatibility": "centralized-v1",
+  "prediction_states": ["NORMAL_MONITORED_PATTERN", "POTENTIALLY_ABNORMAL", "UNRELIABLE_SIGNAL"],
+  "frozen_runtime": {
+    "sampling_rate_hz": 250,
+    "window_seconds": 10,
+    "stride_seconds": 5,
+    "lead": "Lead II approximation",
+    "threshold_source": "experiments/ptbxl_phase4/threshold.json"
+  },
+  "artifacts": [
+    {"path": "docs/PROJECT_ML_SPEC.md", "sha256": "4594193199eb212e6d86dd5b038b28da87815ddeaceaa2b341167b5d3ac3e33f"},
+    {"path": "docs/DATA_CONTRACT.md", "sha256": "b93eb23139121c7df0b83629ff35558d0153b43c898d075bfcad919f497cc3cd"},
+    {"path": "docs/LABEL_SCHEMA.md", "sha256": "8d091f68c012a16d397a46a1c6a71a582df2b3a6a0e503931a1ff2061e9e2ca3"},
+    {"path": "docs/EVALUATION_PROTOCOL.md", "sha256": "acfd6e34130cf39764168c741a0ffee24aab2bdf4d35929c1079ac8ec78186f7"},
+    {"path": "docs/EXPERIMENT_MATRIX.md", "sha256": "634dc97842faab67a9c7d47bf4cafdefecc269e89928146b9b08fe8e54a34833"},
+    {"path": "docs/MODEL_CONTRACT.md", "sha256": "ae22e61dbcb6363ad753ac321f72c6979aa4f3e0845452f9805fb004fed94e7d"},
+    {"path": "docs/INFERENCE_CONTRACT.md", "sha256": "b54d3c07be15befef6cb180d23043b0c7774658a72c5f74472a4f6f670a968d2"},
+    {"path": "docs/REPRODUCIBILITY.md", "sha256": "c9bd03ddb9c76d65ec7ec9f775ee22c64fedd20d63746c7dd8bf0c86a87b7213"},
+    {"path": "data/manifests/dataset_inventory.json", "sha256": "36ee2c52a356dbd0a945d873ab4c94c109e943f1d7e8f2089b623bdbad08e36e"},
+    {"path": "data/manifests/ptbxl_manifest.csv", "sha256": "4fe9f062ec045e41b59b9f5e36970bc08df80c990d628a3c950f73e09b7143e3"},
+    {"path": "data/splits/ptbxl_splits.csv", "sha256": "8c6837b0fe0e8809f3bdd217671075cbbc40eade26d0e39557dc3a5c3ffed6d6"},
+    {"path": "experiments/ptbxl_phase3/preprocessing.json", "sha256": "d3715fd450d42e7f96685a43644cffa570a7ee3b6402285da395435018986ae8"},
+    {"path": "experiments/ptbxl_phase3/ecg_cnn_MODEL_V1/best_checkpoint.pt", "sha256": "d93ba264bfa5f76b09400396d133ed05a643a74aeac76489e2e07772f4753521"},
+    {"path": "experiments/ptbxl_phase4/temperature_scaling.json", "sha256": "9606a689791c38c0a8c438a57c0b9de19b40b375cbaa5cd9985851e8539cf386"},
+    {"path": "experiments/ptbxl_phase4/threshold.json", "sha256": "c8f167ea1f15ecd9930176c85cdafb14d459d223336549d914cd16fa3960368c"}
+  ],
+  "deferred": ["hardware", "federated learning", "secure aggregation", "differential privacy", "edge optimization", "wearable-domain validation"],
+  "claims_boundary": "Research prototype; not a medical diagnosis."
+}
