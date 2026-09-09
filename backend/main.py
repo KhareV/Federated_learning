@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.api.routes import monitoring, system, websocket, inference
+from backend.api.routes import monitoring, system, websocket, inference, reports
 from backend.db.database import create_all_tables
 import asyncio
 
@@ -10,6 +10,7 @@ app = FastAPI(
 
 app.include_router(monitoring.router)
 app.include_router(system.router)
+app.include_router(reports.router)
 app.include_router(websocket.router)
 app.include_router(inference.router)
 
