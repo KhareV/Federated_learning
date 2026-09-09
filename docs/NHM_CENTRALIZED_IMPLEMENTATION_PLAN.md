@@ -49,7 +49,7 @@ federated learning, secure aggregation, DP, and edge optimization.
 | 6 | Deterministic streaming state/event evaluation | **Complete** | `docs/PHASE6_STREAMING_REPORT.md`; deterministic replay, event coalescing, and unreliable-state tests |
 | 7 | Hosted model, database, and backend API contracts | **Complete** | `docs/PHASE7_HOSTED_BACKEND_REPORT.md`; session/inference persistence integration tests; 98 total tests passed |
 | 8 | SvelteKit routes use backend data; no fabricated metrics | **Complete** | `docs/PHASE8_FRONTEND_RECONCILIATION_REPORT.md`; Svelte type-check: 0 errors; production build passed |
-| 9 | Software-only replay reaches the frontend end to end | Pending | Not started |
+| 9 | Software-only replay reaches the frontend end to end | **Complete** | `docs/PHASE9_SOFTWARE_E2E_REPORT.md`; replay/API persistence, WebSocket handshake, full Python suite, frontend check/build |
 | 10 | `CENTRALIZED_SYSTEM_V1` artifact and evidence bundle | Pending | Not started |
 
 ## Phase 0 deliverables
