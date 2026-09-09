@@ -1,0 +1,132 @@
+{
+  "model_version": "MODEL_V1",
+  "calibration": {
+    "method": "temperature_scaling",
+    "temperature": 1.1677122332407668
+  },
+  "threshold": 0.404609957416069,
+  "ptbxl": {
+    "val": {
+      "accuracy": 0.8164,
+      "precision": 0.8218,
+      "recall": 0.8694,
+      "f1": 0.8449,
+      "specificity": 0.7446,
+      "false_positive_rate": 0.2554,
+      "auroc": 0.9022,
+      "auprc": 0.9356,
+      "tp": 1591,
+      "tn": 1006,
+      "fp": 345,
+      "fn": 239,
+      "n_total": 3181,
+      "n_normal": 1351,
+      "n_abnormal": 1830,
+      "split": "val",
+      "model_name": "calibrated_MODEL_V1",
+      "dataset": "ptbxl",
+      "notes": "",
+      "brier_score": 0.123801
+    },
+    "test": {
+      "accuracy": 0.8131,
+      "precision": 0.812,
+      "recall": 0.8687,
+      "f1": 0.8394,
+      "specificity": 0.7416,
+      "false_positive_rate": 0.2584,
+      "auroc": 0.9029,
+      "auprc": 0.934,
+      "tp": 1568,
+      "tn": 1042,
+      "fp": 363,
+      "fn": 237,
+      "n_total": 3210,
+      "n_normal": 1405,
+      "n_abnormal": 1805,
+      "split": "test",
+      "model_name": "calibrated_MODEL_V1",
+      "dataset": "ptbxl",
+      "notes": "",
+      "brier_score": 0.124832
+    }
+  },
+  "mitbih": {
+    "accuracy": 0.2954,
+    "precision": 0.2562,
+    "recall": 1.0,
+    "f1": 0.4078,
+    "specificity": 0.0696,
+    "false_positive_rate": 0.9304,
+    "auroc": 0.7387,
+    "auprc": 0.4587,
+    "tp": 4018,
+    "tn": 873,
+    "fp": 11668,
+    "fn": 0,
+    "n_total": 16559,
+    "n_normal": 12541,
+    "n_abnormal": 4018,
+    "split": "external",
+    "model_name": "calibrated_MODEL_V1",
+    "dataset": "mitbih",
+    "notes": "External validation only; no tuning or retraining."
+  },
+  "mitbih_n_windows": 16559,
+  "noise_stress": {
+    "24": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.12038580246913,
+      "predicted_abnormal_fraction": 1.0,
+      "labels_available": false,
+      "note": "Noise Stress Test supplied records are not compatible with the supervised binary labels; F1/AUROC are intentionally not reported."
+    },
+    "18": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.20834413580247,
+      "predicted_abnormal_fraction": 1.0,
+      "labels_available": false,
+      "note": "Noise Stress Test supplied records are not compatible with the supervised binary labels; F1/AUROC are intentionally not reported."
+    },
+    "12": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.33180401234567,
+      "predicted_abnormal_fraction": 1.0,
+      "labels_available": false,
+      "note": "Noise Stress Test supplied records are not compatible with the supervised binary labels; F1/AUROC are intentionally not reported."
+    },
+    "6": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.48458333333333,
+      "predicted_abnormal_fraction": 1.0,
+      "labels_available": false,
+      "note": "Noise Stress Test supplied records are not compatible with the supervised binary labels; F1/AUROC are intentionally not reported."
+    },
+    "0": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.64929320987654,
+      "predicted_abnormal_fraction": 1.0,
+      "labels_available": false,
+      "note": "Noise Stress Test supplied records are not compatible with the supervised binary labels; F1/AUROC are intentionally not reported."
+    },
+    "-6": {
+      "n_windows": 6480,
+      "n_usable": 6480,
+      "unreliable_fraction": 0.0,
+      "mean_sqi": 56.81419135802469,
+      "predicted_abnormal_fraction": 1.0,
+      "labels_available": false,
+      "note": "Noise Stress Test supplied records are not compatible with the supervised binary labels; F1/AUROC are intentionally not reported."
+    }
+  }
+}

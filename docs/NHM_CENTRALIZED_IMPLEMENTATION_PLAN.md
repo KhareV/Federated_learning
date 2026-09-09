@@ -44,7 +44,7 @@ federated learning, secure aggregation, DP, and edge optimization.
 | 1 | Supplied datasets registered, structurally validated, and manifestable | **Complete** | `scripts/validate_datasets.py` passed for PTB-XL, MIT-BIH, Noise Stress, BIDMC; inventory written |
 | 2 | Train-only normalization, canonical ECG path, and SQI gate verified | **Complete** | `tests/test_phase2_ecg_contract.py`; full suite: 86 passed |
 | 3 | Real PTB-XL baselines and reproducible `MODEL_V1` | **Complete** | `docs/PHASE3_REAL_PTBXL_BASELINES.md`; full real-data run and checkpoint artifacts |
-| 4 | Calibration, locked threshold, external and noise reports | Pending | Not started |
+| 4 | Calibration, locked threshold, external and noise reports | **Complete** | `docs/PHASE4_CALIBRATION_EXTERNAL_NOISE_REPORT.md`; calibrated PTB-XL, locked MIT-BIH external evaluation, all six SNR levels |
 | 5 | PPG/SpO₂ pipeline, BIDMC synchronization, fusion/ablations | Pending | Not started |
 | 6 | Deterministic streaming state/event evaluation | Pending | Not started |
 | 7 | Hosted model, database, and backend API contracts | Pending | Not started |
