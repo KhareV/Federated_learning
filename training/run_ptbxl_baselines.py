@@ -179,7 +179,7 @@ def run_classical(data, output_dir, dataset, seed):
         logger.info("%s complete: validation F1=%s", name, result.get("val", {}).get("f1"))
 
 
-def run_cnn(data, output_dir, dataset, seed, epochs, batch_size, model_version="MODEL_V1"):
+def run_cnn(data, output_dir, dataset, seed, epochs, batch_size, lr=0.001, patience=7, model_version="MODEL_V1"):
     """Train the compact 1D CNN on the same locked arrays as the baselines."""
     from training.train_ecg_cnn import train_cnn
 
@@ -190,7 +190,8 @@ def run_cnn(data, output_dir, dataset, seed, epochs, batch_size, model_version="
     train_cnn(
         train_x, train_y, val_x, val_y, test_x, test_y,
         experiment_dir=str(cnn_dir), dataset=dataset, seed=seed,
-        max_epochs=epochs, batch_size=batch_size, model_version=model_version,
+        max_epochs=epochs, batch_size=batch_size, lr=lr, patience=patience,
+        model_version=model_version,
     )
     with (cnn_dir / "run_metadata.json").open("w") as handle:
         json.dump({"experiment": f"ecg_cnn_{model_version}", "model_version": model_version, "dataset": dataset,
@@ -211,6 +212,8 @@ def main():
     parser.add_argument("--models", choices=["classical", "cnn", "all"], default="all")
     parser.add_argument("--cnn-epochs", type=int, default=30)
     parser.add_argument("--cnn-batch-size", type=int, default=32)
+    parser.add_argument("--cnn-lr", type=float, default=0.001)
+    parser.add_argument("--cnn-patience", type=int, default=7)
     parser.add_argument("--model-version", default="MODEL_V1")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -229,7 +232,8 @@ def main():
     if args.models in ("classical", "all"):
         run_classical(data, output_dir, "ptbxl", args.seed)
     if args.models in ("cnn", "all"):
-        run_cnn(data, output_dir, "ptbxl", args.seed, args.cnn_epochs, args.cnn_batch_size, args.model_version)
+        run_cnn(data, output_dir, "ptbxl", args.seed, args.cnn_epochs, args.cnn_batch_size,
+                args.cnn_lr, args.cnn_patience, args.model_version)
 
 
 if __name__ == "__main__":
