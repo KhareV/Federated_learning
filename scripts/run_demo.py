@@ -12,7 +12,6 @@ import httpx
 
 from backend.db.database import create_all_tables
 from backend.main import app
-from inference.streaming import StreamingInferenceEngine, locked_model_predictor
 from preprocessing.ecg import synthesize_ecg_segment
 
 
@@ -22,21 +21,16 @@ async def run(duration_seconds: int, seed: int) -> dict:
 		response = await client.post("/monitoring/sessions/start", json={"subject_id": "replay-subject", "device_id": "software-replay"})
 		response.raise_for_status()
 		session_id = response.json()["session_id"]
-		predictor, model_version = locked_model_predictor("experiments/ptbxl_phase3/ecg_cnn_MODEL_V1/best_checkpoint.pt", "experiments/ptbxl_phase3/preprocessing.json", "experiments/ptbxl_phase4/temperature_scaling.json")
-		engine = StreamingInferenceEngine(predictor, source_fs=250, threshold=0.5)
 		samples = synthesize_ecg_segment(duration_seconds * 250, seed=seed)
 		records = []
 		for start in range(0, len(samples), 625):
-			for record in engine.push(samples[start:start + 625]):
-				lo = int(record["window_start_seconds"] * 250); hi = int(record["window_end_seconds"] * 250)
-				inference = await client.post("/inference", json={"session_id": session_id, "samples": samples[lo:hi].tolist(), "sampling_rate": 250, "source": "REPLAY"})
-				inference.raise_for_status()
-				records.append(inference.json())
-		stream_summary = engine.summary()
+			chunk = await client.post(f"/monitoring/sessions/{session_id}/chunks", json={"samples": samples[start:start + 625].tolist(), "sampling_rate": 250, "source": "REPLAY"})
+			chunk.raise_for_status()
+			records.extend(chunk.json()["emitted_inferences"])
 		await client.put(f"/monitoring/sessions/{session_id}/stop")
 		history = await client.get(f"/monitoring/sessions/{session_id}/predictions")
 		history.raise_for_status()
-		return {"session_id": session_id, "model_version": model_version, "windows": len(records), "stream": stream_summary, "persisted_predictions": len(history.json())}
+		return {"session_id": session_id, "model_version": records[0]["model_version"] if records else None, "windows": len(records), "persisted_predictions": len(history.json())}
 
 
 def main() -> None:

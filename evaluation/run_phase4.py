@@ -80,7 +80,7 @@ def evaluate_mitbih(model, preprocessor, assessor, data_dir, threshold):
 
 
 def evaluate_noise(model, preprocessor, assessor, data_dir, threshold):
-    by_snr = defaultdict(lambda: {"probabilities": [], "sqi": [], "unreliable": 0, "windows": 0})
+    by_snr = defaultdict(lambda: {"probabilities": [], "sqi": [], "unreliable": 0, "windows": 0, "quality_states": defaultdict(int)})
     for path in sorted(Path(data_dir).glob("*.mat")):
         record = loadmat(path)["data"][0, 0]
         snr = int(float(np.asarray(record["snr"]).squeeze()))
@@ -95,6 +95,7 @@ def evaluate_noise(model, preprocessor, assessor, data_dir, threshold):
             quality = assessor.assess(window)
             bucket["windows"] += 1
             bucket["sqi"].append(quality.overall_sqi)
+            bucket["quality_states"][quality.canonical_state] += 1
             if quality.is_usable:
                 usable.append(window)
             else:
@@ -110,8 +111,11 @@ def evaluate_noise(model, preprocessor, assessor, data_dir, threshold):
             "unreliable_fraction": bucket["unreliable"] / max(bucket["windows"], 1),
             "mean_sqi": float(np.mean(bucket["sqi"])) if bucket["sqi"] else 0.0,
             "predicted_abnormal_fraction": float(np.mean(probabilities >= threshold)) if len(probabilities) else 0.0,
+            "mean_probability_abnormal": float(np.mean(probabilities)) if len(probabilities) else None,
+            "probability_standard_deviation": float(np.std(probabilities)) if len(probabilities) else None,
+            "quality_state_counts": dict(bucket["quality_states"]),
             "labels_available": False,
-            "note": "Noise Stress Test supplied records are not compatible with the supervised binary labels; F1/AUROC are intentionally not reported.",
+            "note": "Noise Stress Test labels are not compatible with the supervised binary target; classification metrics are intentionally not reported. Quality state and prediction stability are reported instead.",
         }
     return result
 
