@@ -2,17 +2,17 @@
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
-	import { Activity, BrainCircuit, Network, FlaskConical, Menu, X, ArrowUpRight } from '@lucide/svelte';
+	import { Activity, Radio, Network, FlaskConical, Menu, X, ArrowUpRight } from '@lucide/svelte';
 	import { api } from '$lib/services/api';
 	const NAV = [
 		{ label: 'OBSERVE', detail: 'Signals', path: '/overview', icon: Activity },
-		{ label: 'INSIGHTS', detail: 'Models', path: '/ai/insights', icon: BrainCircuit },
+		{ label: 'MONITOR', detail: 'Central stream', path: '/monitoring', icon: Radio },
 		{ label: 'DEFERRED', detail: 'Federated / hardware', path: '/fl/overview', icon: Network },
 		{ label: 'LAB', detail: 'Evidence', path: '/research/analytics', icon: FlaskConical }
 	];
 	const GROUPS: Record<string, string> = {
-		'/overview': '/overview', '/monitor': '/overview', '/monitoring': '/overview', '/signals': '/overview', '/patients': '/overview', '/trends': '/overview', '/alerts': '/overview', '/reports': '/overview',
-		'/ai': '/ai/insights', '/fl': '/fl/overview', '/research': '/research/analytics', '/system': '/research/analytics'
+		'/overview': '/overview', '/monitoring': '/monitoring', '/monitor': '/monitoring', '/signals': '/monitoring',
+		'/fl': '/fl/overview', '/research': '/research/analytics', '/system': '/overview'
 	};
 	let { children }: { children?: Snippet } = $props();
 	let mobileOpen = $state(false); let apiStatus = $state('SYNCING');

@@ -136,6 +136,7 @@ def train_cnn(
     lr: float = 0.001,
     patience: int = 7,
     device: str = "auto",
+    model_version: str = "MODEL_V1",
 ):
     """Full CNN training loop with early stopping and checkpointing."""
     torch.manual_seed(seed)
@@ -161,7 +162,7 @@ def train_cnn(
     input_length = X_train.shape[1] if X_train.ndim > 1 else 2500
     config = ECGCNNConfig(
         input_length=input_length,
-        model_version="MODEL_V1",
+        model_version=model_version,
         preprocessing_version="1.0.0",
     )
     model = ECGCNN1D(config=config).to(device)
@@ -257,7 +258,7 @@ def train_cnn(
     )
     test_metrics = compute_metrics(
         test_true, test_pred, test_prob,
-        split="test", model_name="ecg_cnn_MODEL_V1", dataset=dataset
+        split="test", model_name=f"ecg_cnn_{model_version}", dataset=dataset
     )
     test_metrics.print_report("E04 1D CNN — TEST SET")
 
@@ -265,6 +266,7 @@ def train_cnn(
     with open(exp_dir / "config.json", "w") as f:
         json.dump({
             "experiment": "E04_ecg_cnn",
+            "model_version": model_version,
             "model_config": config.to_dict(),
             "training": {
                 "seed": seed, "batch_size": batch_size,
@@ -284,7 +286,7 @@ def train_cnn(
 
     with open(exp_dir / "results.json", "w") as f:
         json.dump({
-            "experiment": "E04_ecg_cnn",
+            "experiment": "E04_ecg_cnn", "model_version": model_version,
             "best_val_f1": round(best_val_f1, 4),
             "test": test_metrics.to_dict(),
         }, f, indent=2)

@@ -52,7 +52,7 @@
 				<h1>Understand the pattern.</h1>
 				<p class="lede">The dashboard migration is now anchored to the NHM visual system. Live signal, anomaly, federated learning, and research surfaces will land here without losing their existing backend contracts.</p>
 			</div>
-			<div class="identity-panel"><span>ACCESS MODE</span><strong>Clerk-ready</strong><small>Identity provider boundary reserved</small></div>
+			<div class="identity-panel"><span>ACCESS MODE</span><strong>Authentication disabled</strong><small>Session and device IDs are data provenance only</small></div>
 		</div>
 
 		{#if statusError}<div class="notice">SYSTEM HEALTH / {statusError}</div>{/if}

@@ -70,3 +70,15 @@ class SignalRecording(Base):
     n_samples = Column(Integer, default=0)
     quality_state = Column(String, default="UNRELIABLE")
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class MonitoringEvent(Base):
+    __tablename__ = "monitoring_events"
+    id = Column(String, primary_key=True)
+    session_id = Column(String, index=True, nullable=False)
+    state = Column(String, nullable=False)
+    start_time = Column(DateTime, nullable=False, default=datetime.utcnow)
+    end_time = Column(DateTime, nullable=True)
+    peak_probability = Column(Float, default=0.0)
+    n_windows = Column(Integer, default=0)
+    source = Column(String, default="LIVE")
