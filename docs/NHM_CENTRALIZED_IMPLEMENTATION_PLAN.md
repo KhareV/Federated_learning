@@ -47,7 +47,7 @@ federated learning, secure aggregation, DP, and edge optimization.
 | 4 | Calibration, locked threshold, external and noise reports | **Complete** | `docs/PHASE4_CALIBRATION_EXTERNAL_NOISE_REPORT.md`; calibrated PTB-XL, locked MIT-BIH external evaluation, all six SNR levels |
 | 5 | PPG/SpO₂ pipeline, BIDMC synchronization, fusion/ablations | **Complete** | `docs/PHASE5_MULTIMODAL_SIGNAL_REPORT.md`; BIDMC synchronization and missing-modality tests; supervised ablations deferred because compatible labels are unavailable |
 | 6 | Deterministic streaming state/event evaluation | **Complete** | `docs/PHASE6_STREAMING_REPORT.md`; deterministic replay, event coalescing, and unreliable-state tests |
-| 7 | Hosted model, database, and backend API contracts | Pending | Not started |
+| 7 | Hosted model, database, and backend API contracts | **Complete** | `docs/PHASE7_HOSTED_BACKEND_REPORT.md`; session/inference persistence integration tests; 98 total tests passed |
 | 8 | SvelteKit routes use backend data; no fabricated metrics | Pending | Not started |
 | 9 | Software-only replay reaches the frontend end to end | Pending | Not started |
 | 10 | `CENTRALIZED_SYSTEM_V1` artifact and evidence bundle | Pending | Not started |

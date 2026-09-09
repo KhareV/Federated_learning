@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.api.routes import monitoring, signals, anomaly, baseline, federated, experiments, devices, alerts, reports, system, websocket
+from backend.api.routes import monitoring, signals, anomaly, baseline, federated, experiments, devices, alerts, reports, system, websocket, inference
 from backend.db.database import create_all_tables
 import asyncio
 
@@ -19,7 +19,14 @@ app.include_router(alerts.router)
 app.include_router(reports.router)
 app.include_router(system.router)
 app.include_router(websocket.router)
+app.include_router(inference.router)
 
 @app.on_event("startup")
 async def startup():
     await create_all_tables()
+    from backend.services.model_service import model_service, ModelUnavailable
+    try:
+        model_service.load()
+    except ModelUnavailable:
+        # API remains available for health/diagnostics when artifacts are absent.
+        pass
