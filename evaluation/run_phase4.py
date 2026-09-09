@@ -133,6 +133,9 @@ def main():
     parser.add_argument("--ptbxl", default="data/raw/ptbxl")
     parser.add_argument("--mitbih", default="data/raw/mitbih")
     parser.add_argument("--noise", default="data/raw/mitbih_noise_stress")
+    parser.add_argument("--manifest", default="data/manifests/ptbxl_manifest.csv")
+    parser.add_argument("--split-manifest", default="data/splits/ptbxl_splits.csv")
+    parser.add_argument("--label-mode", choices=["broad_diagnostic", "rhythm_conduction"], default="broad_diagnostic")
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -143,8 +146,8 @@ def main():
     preprocessor = ECGPreprocessor.load_normalization_stats(args.preprocessing)
     assessor = ECGQualityAssessor(fs=250)
 
-    ptbxl = PTBXLDataset(data_dir=args.ptbxl, dataset_version="1.0.1")
-    manifest = load_locked_manifest(ptbxl, Path("data/manifests/ptbxl_manifest.csv"), Path("data/splits/ptbxl_splits.csv"), args.seed)
+    ptbxl = PTBXLDataset(data_dir=args.ptbxl, dataset_version="1.0.1", label_mode=args.label_mode)
+    manifest = load_locked_manifest(ptbxl, Path(args.manifest), Path(args.split_manifest), args.seed)
     data, _ = materialize_windows(ptbxl, manifest, output / "ptbxl_replay")
     val_raw = predict(model, data["val"][0])
     calibrator = TemperatureScaler().fit(val_raw, data["val"][1])
@@ -153,6 +156,7 @@ def main():
     (output / "threshold.json").write_text(json.dumps({"threshold": threshold, "selection": "validation_max_f1_then_sensitivity"}, indent=2) + "\n")
     report = {
         "model_version": model_version,
+        "label_mode": args.label_mode,
         "calibration": calibrator.to_dict(),
         "threshold": threshold,
         "ptbxl": evaluate_locked(model, data, calibrator, threshold, "ptbxl", model_version),
