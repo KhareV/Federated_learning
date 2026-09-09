@@ -1,0 +1,25 @@
+{
+  "audit_version": "1.0.0",
+  "task": "NORMAL_MONITORED_PATTERN vs POTENTIALLY_ABNORMAL",
+  "ptbxl": {
+    "version": "1.0.1",
+    "lead": "II",
+    "records": 21430,
+    "class_counts": {
+      "NORMAL": 9260,
+      "ABNORMAL": 12170
+    },
+    "rule": "highest-confidence diagnostic superclass; NORM=normal and MI/STTC/CD/HYP=abnormal"
+  },
+  "mitbih": {
+    "version": "1.0.0",
+    "lead": "MLII",
+    "windows": 16302,
+    "class_counts": {
+      "NORMAL": 12284,
+      "ABNORMAL": 4018
+    },
+    "rule": "10-second 250 Hz windows; majority valid beat label; ties and excluded-only windows dropped"
+  },
+  "comparability_limit": "PTB-XL diagnostic superclasses and MIT-BIH beat-rhythm annotations are different label sources; external evaluation is a generalization check, not a label-equivalence claim."
+}

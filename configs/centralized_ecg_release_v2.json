@@ -1,0 +1,11 @@
+{
+  "release_version": "CENTRALIZED_ECG_V2",
+  "task": "NORMAL_MONITORED_PATTERN vs POTENTIALLY_ABNORMAL",
+  "development_dataset": {"name": "ptbxl", "version": "1.0.1", "lead": "II"},
+  "external_dataset": {"name": "mitbih", "version": "1.0.0", "lead": "MLII", "role": "evaluation_only"},
+  "windowing": {"window_seconds": 10, "stride_seconds": 5, "sampling_rate_hz": 250},
+  "split": {"seed": 42, "train_fraction": 0.70, "validation_fraction": 0.15, "test_fraction": 0.15, "group_field": "participant_id"},
+  "calibration": {"method": "temperature_scaling", "threshold_selection": "validation_max_f1_then_sensitivity"},
+  "external_release_gate": {"auroc_min": 0.80, "sensitivity_min": 0.70, "specificity_min": 0.70, "confidence_intervals": "bootstrap_95_percent"},
+  "multimodal": {"supervised_status": "blocked_no_compatible_labels", "bidmc_role": "synchronization_quality_missingness_only"}
+}

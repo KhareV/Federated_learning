@@ -1,7 +1,9 @@
 # CENTRALIZED_SYSTEM_V1
 
-This is the locked centralized software-only milestone. The authoritative
-artifact inventory and SHA-256 checksums are in
+This was the initial centralized software-only milestone. It is superseded as
+a release candidate because its locked ECG model failed the subsequently
+enforced external MIT-BIH release gate. The authoritative historical artifact
+inventory and SHA-256 checksums are in
 `artifacts/CENTRALIZED_SYSTEM_V1/LOCK_MANIFEST.json`.
 
 The release includes the frozen contracts, registered dataset manifests,

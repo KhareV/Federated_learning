@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from calibration.temperature import TemperatureScaler, select_f1_threshold
 from datasets.mitbih import MITBIHDataset
 from evaluation.metrics import compute_metrics
+from evaluation.release_gate import ExternalReleaseGate
 from models.ecg_cnn import ECGCNN1D
 from preprocessing.ecg import ECGPreprocessor
 from preprocessing.quality_ecg import ECGQualityAssessor
@@ -147,6 +148,8 @@ def main():
         "ptbxl": evaluate_locked(model, data, calibrator, threshold, "ptbxl"),
     }
     report["mitbih"], report["mitbih_n_windows"] = evaluate_mitbih(model, preprocessor, assessor, args.mitbih, threshold)
+    report["external_release_gate"] = ExternalReleaseGate().evaluate(report["mitbih"])
+    report["release_status"] = "ELIGIBLE" if report["external_release_gate"]["status"] == "PASS" else "BLOCKED_EXTERNAL_GATE"
     report["noise_stress"] = evaluate_noise(model, preprocessor, assessor, args.noise, threshold)
     (output / "phase4_report.json").write_text(json.dumps(report, indent=2) + "\n")
     logger.info("Phase 4 report written to %s", output)

@@ -1,6 +1,6 @@
 {
   "system_version": "CENTRALIZED_SYSTEM_V1",
-  "status": "locked",
+  "status": "historical_not_release_eligible",
   "scope": "centralized software-only research prototype",
   "model_version": "MODEL_V1",
   "backend_frontend_compatibility": "centralized-v1",
@@ -30,5 +30,5 @@
     {"path": "experiments/ptbxl_phase4/threshold.json", "sha256": "c8f167ea1f15ecd9930176c85cdafb14d459d223336549d914cd16fa3960368c"}
   ],
   "deferred": ["hardware", "federated learning", "secure aggregation", "differential privacy", "edge optimization", "wearable-domain validation"],
-  "claims_boundary": "Research prototype; not a medical diagnosis."
+  "claims_boundary": "Research prototype; not a medical diagnosis. Current MODEL_V1 fails the external MIT-BIH release gate."
 }

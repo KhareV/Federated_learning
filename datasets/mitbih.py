@@ -65,6 +65,23 @@ MITBIH_BEAT_TO_CANONICAL = {
 
 CANONICAL_TO_INT = {"NORMAL": 0, "ABNORMAL": 1}
 
+
+def majority_window_label(beat_labels: np.ndarray) -> Optional[str]:
+    """Return a canonical window label, excluding invalid and tied windows.
+
+    This is deliberately independent of the signal loader so the pre-registered
+    vote rule can be unit-tested.  A tie is ambiguous evidence and must not be
+    converted into a normal window.
+    """
+    usable = [label for label in beat_labels if label in CANONICAL_TO_INT]
+    if not usable:
+        return None
+    n_normal = sum(label == "NORMAL" for label in usable)
+    n_abnormal = sum(label == "ABNORMAL" for label in usable)
+    if n_normal == n_abnormal:
+        return None
+    return "ABNORMAL" if n_abnormal > n_normal else "NORMAL"
+
 # Known MIT-BIH record IDs
 MITBIH_RECORD_IDS = [
     "100", "101", "102", "103", "104", "105", "106", "107",
@@ -318,21 +335,10 @@ class MITBIHDataset:
             mask = (beat_samples >= start) & (beat_samples < end)
             window_beats = beat_labels[mask]
 
-            # Skip windows with only excluded beats
-            usable = [l for l in window_beats if l != "EXCLUDE"]
-            if not usable:
+            label = majority_window_label(window_beats)
+            if label is None:
                 win_idx += 1
                 continue
-
-            # Majority vote
-            n_normal = sum(1 for l in usable if l == "NORMAL")
-            n_abnormal = sum(1 for l in usable if l == "ABNORMAL")
-
-            if n_normal == 0 and n_abnormal == 0:
-                win_idx += 1
-                continue
-
-            label = "ABNORMAL" if n_abnormal > n_normal else "NORMAL"
             label_int = CANONICAL_TO_INT[label]
 
             windows.append(MITBIHWindow(
