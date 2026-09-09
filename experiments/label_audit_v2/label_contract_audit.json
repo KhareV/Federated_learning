@@ -1,0 +1,345 @@
+{
+  "audit_version": "1.0.0",
+  "task": "NORMAL_MONITORED_PATTERN vs POTENTIALLY_ABNORMAL",
+  "ptbxl": {
+    "version": "1.0.1",
+    "lead": "II",
+    "records": 21430,
+    "class_counts": {
+      "NORMAL": 9260,
+      "ABNORMAL": 12170
+    },
+    "superclass_counts": {
+      "NORM": 9260,
+      "MI": 4203,
+      "STTC": 3351,
+      "HYP": 1296,
+      "CD": 3320
+    },
+    "rule": "highest-confidence diagnostic superclass; NORM=normal and MI/STTC/CD/HYP=abnormal"
+  },
+  "mitbih": {
+    "version": "1.0.0",
+    "lead": "MLII",
+    "windows": 16302,
+    "class_counts": {
+      "NORMAL": 12284,
+      "ABNORMAL": 4018
+    },
+    "per_record_window_counts": {
+      "100": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "101": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "102": {
+        "windows": 62,
+        "class_counts": {
+          "ABNORMAL": 45,
+          "NORMAL": 17
+        }
+      },
+      "103": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "104": {
+        "windows": 336,
+        "class_counts": {
+          "ABNORMAL": 318,
+          "NORMAL": 18
+        }
+      },
+      "105": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "106": {
+        "windows": 319,
+        "class_counts": {
+          "NORMAL": 258,
+          "ABNORMAL": 61
+        }
+      },
+      "107": {
+        "windows": 98,
+        "class_counts": {
+          "ABNORMAL": 98
+        }
+      },
+      "108": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "109": {
+        "windows": 360,
+        "class_counts": {
+          "ABNORMAL": 360
+        }
+      },
+      "111": {
+        "windows": 360,
+        "class_counts": {
+          "ABNORMAL": 360
+        }
+      },
+      "112": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "113": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "114": {
+        "windows": 359,
+        "class_counts": {
+          "NORMAL": 358,
+          "ABNORMAL": 1
+        }
+      },
+      "115": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "116": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "117": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "118": {
+        "windows": 360,
+        "class_counts": {
+          "ABNORMAL": 360
+        }
+      },
+      "119": {
+        "windows": 358,
+        "class_counts": {
+          "NORMAL": 356,
+          "ABNORMAL": 2
+        }
+      },
+      "121": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "122": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "123": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "124": {
+        "windows": 360,
+        "class_counts": {
+          "ABNORMAL": 360
+        }
+      },
+      "200": {
+        "windows": 307,
+        "class_counts": {
+          "ABNORMAL": 43,
+          "NORMAL": 264
+        }
+      },
+      "201": {
+        "windows": 346,
+        "class_counts": {
+          "NORMAL": 340,
+          "ABNORMAL": 6
+        }
+      },
+      "202": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 355,
+          "ABNORMAL": 5
+        }
+      },
+      "203": {
+        "windows": 358,
+        "class_counts": {
+          "NORMAL": 356,
+          "ABNORMAL": 2
+        }
+      },
+      "205": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 354,
+          "ABNORMAL": 6
+        }
+      },
+      "207": {
+        "windows": 340,
+        "class_counts": {
+          "ABNORMAL": 340
+        }
+      },
+      "208": {
+        "windows": 336,
+        "class_counts": {
+          "ABNORMAL": 139,
+          "NORMAL": 197
+        }
+      },
+      "209": {
+        "windows": 359,
+        "class_counts": {
+          "NORMAL": 336,
+          "ABNORMAL": 23
+        }
+      },
+      "210": {
+        "windows": 359,
+        "class_counts": {
+          "NORMAL": 356,
+          "ABNORMAL": 3
+        }
+      },
+      "212": {
+        "windows": 356,
+        "class_counts": {
+          "ABNORMAL": 234,
+          "NORMAL": 122
+        }
+      },
+      "213": {
+        "windows": 340,
+        "class_counts": {
+          "NORMAL": 333,
+          "ABNORMAL": 7
+        }
+      },
+      "214": {
+        "windows": 360,
+        "class_counts": {
+          "ABNORMAL": 360
+        }
+      },
+      "215": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "217": {
+        "windows": 218,
+        "class_counts": {
+          "ABNORMAL": 174,
+          "NORMAL": 44
+        }
+      },
+      "219": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "220": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 357,
+          "ABNORMAL": 3
+        }
+      },
+      "221": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "222": {
+        "windows": 347,
+        "class_counts": {
+          "NORMAL": 309,
+          "ABNORMAL": 38
+        }
+      },
+      "223": {
+        "windows": 336,
+        "class_counts": {
+          "NORMAL": 299,
+          "ABNORMAL": 37
+        }
+      },
+      "228": {
+        "windows": 335,
+        "class_counts": {
+          "NORMAL": 324,
+          "ABNORMAL": 11
+        }
+      },
+      "230": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 360
+        }
+      },
+      "231": {
+        "windows": 356,
+        "class_counts": {
+          "ABNORMAL": 256,
+          "NORMAL": 100
+        }
+      },
+      "232": {
+        "windows": 360,
+        "class_counts": {
+          "ABNORMAL": 360
+        }
+      },
+      "233": {
+        "windows": 357,
+        "class_counts": {
+          "NORMAL": 356,
+          "ABNORMAL": 1
+        }
+      },
+      "234": {
+        "windows": 360,
+        "class_counts": {
+          "NORMAL": 355,
+          "ABNORMAL": 5
+        }
+      }
+    },
+    "rule": "10-second 250 Hz windows; majority valid beat label; ties and excluded-only windows dropped"
+  },
+  "comparability_limit": "PTB-XL diagnostic superclasses and MIT-BIH beat-rhythm annotations are different label sources; external evaluation is a generalization check, not a label-equivalence claim. Per-record external reporting is required because the MIT-BIH unit is a recording/participant, not an independent window."
+}

@@ -24,20 +24,30 @@ def main() -> None:
 	ptbxl_records = [record for record in ptbxl.load_all_records() if record.is_valid]
 	mitbih = MITBIHDataset(data_dir=args.mitbih, target_lead="MLII")
 	mitbih_windows = mitbih.build_windows(window_seconds=10, stride_seconds=5, target_fs=250)
+	mitbih_by_record = {
+		record_id: {
+			"windows": int(len(group)),
+			"class_counts": dict(Counter(group.label_canonical)),
+		}
+		for record_id, group in mitbih_windows.groupby("record_id", sort=True)
+	}
+	ptbxl_by_superclass = dict(Counter(record.label_raw for record in ptbxl_records))
 	payload = {
 		"audit_version": "1.0.0",
 		"task": "NORMAL_MONITORED_PATTERN vs POTENTIALLY_ABNORMAL",
 		"ptbxl": {
 			"version": "1.0.1", "lead": "II", "records": len(ptbxl_records),
 			"class_counts": dict(Counter(record.label_canonical for record in ptbxl_records)),
+			"superclass_counts": ptbxl_by_superclass,
 			"rule": "highest-confidence diagnostic superclass; NORM=normal and MI/STTC/CD/HYP=abnormal",
 		},
 		"mitbih": {
 			"version": "1.0.0", "lead": "MLII", "windows": len(mitbih_windows),
 			"class_counts": dict(Counter(mitbih_windows.label_canonical)),
+			"per_record_window_counts": mitbih_by_record,
 			"rule": "10-second 250 Hz windows; majority valid beat label; ties and excluded-only windows dropped",
 		},
-		"comparability_limit": "PTB-XL diagnostic superclasses and MIT-BIH beat-rhythm annotations are different label sources; external evaluation is a generalization check, not a label-equivalence claim.",
+		"comparability_limit": "PTB-XL diagnostic superclasses and MIT-BIH beat-rhythm annotations are different label sources; external evaluation is a generalization check, not a label-equivalence claim. Per-record external reporting is required because the MIT-BIH unit is a recording/participant, not an independent window.",
 	}
 	output = Path(args.output)
 	output.parent.mkdir(parents=True, exist_ok=True)
