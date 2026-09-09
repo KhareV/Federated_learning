@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import signal as sp_signal
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, Dict
 
 @dataclass
 class PPGResult:
@@ -11,6 +11,13 @@ class PPGResult:
     amplitude: np.ndarray
     motion_artifact_detected: bool
     snr: float
+    heart_rate_bpm: float = 0.0
+    quality_state: str = "UNRELIABLE"
+    feature_values: Dict[str, float] = None
+
+    def __post_init__(self):
+        if self.feature_values is None:
+            self.feature_values = {}
 
 class PPGProcessor:
     def remove_dc(self, sig, fs=50):
@@ -53,10 +60,26 @@ class PPGProcessor:
         return 10 * np.log10(signal_power / noise_power)
     
     def process(self, raw_ppg, fs=50):
+        raw_ppg = np.asarray(raw_ppg, dtype=np.float32).flatten()
+        if len(raw_ppg) < max(20, int(fs * 2)):
+            return PPGResult(raw_ppg, np.array([], dtype=int), np.array([]), np.array([]), True, 0.0)
+        raw_ppg = np.nan_to_num(raw_ppg)
         filtered = self.bandpass_filter(self.remove_dc(raw_ppg, fs=fs), fs=fs)
         peaks = self.detect_peaks(filtered, fs=fs)
         pulse_intervals = self.compute_pulse_intervals(peaks, fs)
         amplitude = self.estimate_pulse_amplitude(filtered, peaks)
         motion = self.detect_motion_artifact(raw_ppg, filtered, fs=fs)
         snr = self.compute_snr(raw_ppg, filtered)
-        return PPGResult(filtered, peaks, pulse_intervals, amplitude, motion, snr)
+        heart_rate = float(60000.0 / np.median(pulse_intervals)) if len(pulse_intervals) else 0.0
+        if motion or len(peaks) < 2 or not np.isfinite(snr):
+            state = "UNRELIABLE"
+        elif snr < 5.0 or len(pulse_intervals) < 3:
+            state = "DEGRADED"
+        else:
+            state = "GOOD"
+        features = {
+            "heart_rate_bpm": heart_rate,
+            "pulse_interval_ms": float(np.median(pulse_intervals)) if len(pulse_intervals) else 0.0,
+            "pulse_amplitude_median": float(np.median(np.abs(amplitude))) if len(amplitude) else 0.0,
+        }
+        return PPGResult(filtered, peaks, pulse_intervals, amplitude, motion, snr, heart_rate, state, features)
