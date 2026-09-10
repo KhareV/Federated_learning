@@ -22,3 +22,12 @@ Deliberately not integrated as active supervised evidence:
 
 The P2 project remains retained for provenance; its source is not an active
 runtime dependency. No multimodal supervised-improvement claim is made.
+
+## Verification
+
+The active system suite is run from the repository root with `python3 -m pytest
+-q`. The supplied P2 project is intentionally isolated and is verified with:
+
+```text
+cd continuous-health-monitor && python3 -m pytest -q
+```

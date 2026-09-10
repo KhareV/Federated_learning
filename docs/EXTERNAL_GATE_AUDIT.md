@@ -19,7 +19,8 @@ MIT-BIH evaluations are frozen evidence, not a tuning loop.
 
 `MODEL_V3` includes record-level bootstrap intervals: AUROC 0.6427–0.8803,
 sensitivity 0.9900–1.0000, and specificity 0.0467–0.2212. It therefore
-remains **blocked** and is not a releasable centralized model.
+fails the release gate, remains **blocked**, and is not a releasable
+centralized model.
 
 The repeated high-sensitivity/very-low-specificity result confirms a material
 comparability limitation: PTB-XL diagnostic superclasses and MIT-BIH
