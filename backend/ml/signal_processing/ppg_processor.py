@@ -20,6 +20,24 @@ class PPGResult:
             self.feature_values = {}
 
 class PPGProcessor:
+    @staticmethod
+    def _validate_and_interpolate(sig):
+        """Preserve missingness semantics while repairing sparse NaNs safely."""
+        values = np.asarray(sig, dtype=np.float32).flatten()
+        if len(values) == 0:
+            return values, "empty"
+        finite = np.isfinite(values)
+        if finite.mean() < 0.8:
+            return values, "excessive_nonfinite"
+        if finite.sum() < 2 or np.var(values[finite]) < 1e-7:
+            return values, "flatline"
+        if finite.all():
+            return values, None
+        indexes = np.arange(len(values))
+        repaired = values.copy()
+        repaired[~finite] = np.interp(indexes[~finite], indexes[finite], values[finite])
+        return repaired, None
+
     def remove_dc(self, sig, fs=50):
         b, a = sp_signal.butter(2, 0.5/(fs/2), btype='high')
         return sp_signal.filtfilt(b, a, sig)
@@ -63,7 +81,10 @@ class PPGProcessor:
         raw_ppg = np.asarray(raw_ppg, dtype=np.float32).flatten()
         if len(raw_ppg) < max(20, int(fs * 2)):
             return PPGResult(raw_ppg, np.array([], dtype=int), np.array([]), np.array([]), True, 0.0)
-        raw_ppg = np.nan_to_num(raw_ppg)
+        raw_ppg, invalid_reason = self._validate_and_interpolate(raw_ppg)
+        if invalid_reason is not None:
+            return PPGResult(raw_ppg, np.array([], dtype=int), np.array([]), np.array([]), True, 0.0,
+                             0.0, "UNRELIABLE", {"reason": invalid_reason})
         filtered = self.bandpass_filter(self.remove_dc(raw_ppg, fs=fs), fs=fs)
         peaks = self.detect_peaks(filtered, fs=fs)
         pulse_intervals = self.compute_pulse_intervals(peaks, fs)

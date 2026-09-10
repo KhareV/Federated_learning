@@ -19,6 +19,18 @@ def test_ppg_processing_is_deterministic_and_extracts_heart_rate():
     assert first.quality_state in {"GOOD", "DEGRADED", "UNRELIABLE"}
 
 
+def test_ppg_sparse_nans_are_interpolated_but_excessive_missingness_is_rejected():
+    processor = PPGProcessor()
+    t = np.arange(500) / 50
+    raw = np.sin(2 * np.pi * 1.2 * t)
+    raw[10:20] = np.nan
+    assert processor.process(raw, 50).quality_state != "UNRELIABLE"
+    raw[:450] = np.nan
+    result = processor.process(raw, 50)
+    assert result.quality_state == "UNRELIABLE"
+    assert result.feature_values["reason"] == "excessive_nonfinite"
+
+
 def test_spo2_does_not_fabricate_missing_values():
     result = SpO2Processor().process([np.nan, np.nan])
     assert result.valid is False
